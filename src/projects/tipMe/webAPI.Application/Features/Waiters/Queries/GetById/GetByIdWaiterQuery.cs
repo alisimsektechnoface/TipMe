@@ -1,17 +1,15 @@
-using Application.Features.Waiters.Constants;
 using Application.Features.Waiters.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Waiters.Constants.WaitersOperationClaims;
 
 namespace Application.Features.Waiters.Queries.GetById;
 
-public class GetByIdWaiterQuery : IRequest<CustomResponseDto<GetByIdWaiterResponse>>, ISecuredRequest
+public class GetByIdWaiterQuery : IRequest<CustomResponseDto<GetByIdWaiterResponse>>
 {
     public Guid Id { get; set; }
 
@@ -37,7 +35,7 @@ public class GetByIdWaiterQuery : IRequest<CustomResponseDto<GetByIdWaiterRespon
 
             GetByIdWaiterResponse response = _mapper.Map<GetByIdWaiterResponse>(waiter);
 
-          return CustomResponseDto<GetByIdWaiterResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<GetByIdWaiterResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

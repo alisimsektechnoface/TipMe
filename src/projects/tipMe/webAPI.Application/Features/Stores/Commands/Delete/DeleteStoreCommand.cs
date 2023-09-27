@@ -1,18 +1,16 @@
 using Application.Features.Stores.Constants;
-using Application.Features.Stores.Constants;
 using Application.Features.Stores.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Stores.Constants.StoresOperationClaims;
 
 namespace Application.Features.Stores.Commands.Delete;
 
-public class DeleteStoreCommand : IRequest<CustomResponseDto<DeletedStoreResponse>>, ISecuredRequest
+public class DeleteStoreCommand : IRequest<CustomResponseDto<DeletedStoreResponse>>
 {
     public Guid Id { get; set; }
 
@@ -41,7 +39,7 @@ public class DeleteStoreCommand : IRequest<CustomResponseDto<DeletedStoreRespons
 
             DeletedStoreResponse response = _mapper.Map<DeletedStoreResponse>(store);
 
-             return CustomResponseDto<DeletedStoreResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<DeletedStoreResponse>.Success((int)HttpStatusCode.OK, response, true);
 
         }
     }

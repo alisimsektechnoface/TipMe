@@ -3,15 +3,14 @@ using Application.Features.InvoiceOptions.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.InvoiceOptions.Constants.InvoiceOptionsOperationClaims;
 
 namespace Application.Features.InvoiceOptions.Commands.Update;
 
-public class UpdateInvoiceOptionCommand : IRequest<CustomResponseDto<UpdatedInvoiceOptionResponse>>, ISecuredRequest
+public class UpdateInvoiceOptionCommand : IRequest<CustomResponseDto<UpdatedInvoiceOptionResponse>>
 {
     public Guid Id { get; set; }
     public Guid InvoiceId { get; set; }
@@ -43,7 +42,7 @@ public class UpdateInvoiceOptionCommand : IRequest<CustomResponseDto<UpdatedInvo
 
             UpdatedInvoiceOptionResponse response = _mapper.Map<UpdatedInvoiceOptionResponse>(invoiceOption);
 
-          return CustomResponseDto<UpdatedInvoiceOptionResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<UpdatedInvoiceOptionResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

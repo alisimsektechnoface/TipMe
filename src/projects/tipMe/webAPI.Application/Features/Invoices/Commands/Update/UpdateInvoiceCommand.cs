@@ -3,15 +3,15 @@ using Application.Features.Invoices.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
+using System.Text.Json.Serialization;
 using static Application.Features.Invoices.Constants.InvoicesOperationClaims;
 
 namespace Application.Features.Invoices.Commands.Update;
 
-public class UpdateInvoiceCommand : IRequest<CustomResponseDto<UpdatedInvoiceResponse>>, ISecuredRequest
+public class UpdateInvoiceCommand : IRequest<CustomResponseDto<UpdatedInvoiceResponse>>
 {
     public Guid Id { get; set; }
     public DateTime InvoiceDate { get; set; }
@@ -20,6 +20,7 @@ public class UpdateInvoiceCommand : IRequest<CustomResponseDto<UpdatedInvoiceRes
     public decimal Amount { get; set; }
     public DateTime TipDate { get; set; }
     public bool IsTipped { get; set; }
+    [JsonIgnore]
     public string QrCode { get; set; }
     public string Currency { get; set; }
 
@@ -49,7 +50,7 @@ public class UpdateInvoiceCommand : IRequest<CustomResponseDto<UpdatedInvoiceRes
 
             UpdatedInvoiceResponse response = _mapper.Map<UpdatedInvoiceResponse>(invoice);
 
-          return CustomResponseDto<UpdatedInvoiceResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<UpdatedInvoiceResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

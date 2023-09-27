@@ -1,18 +1,16 @@
 using Application.Features.Options.Constants;
-using Application.Features.Options.Constants;
 using Application.Features.Options.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Options.Constants.OptionsOperationClaims;
 
 namespace Application.Features.Options.Commands.Delete;
 
-public class DeleteOptionCommand : IRequest<CustomResponseDto<DeletedOptionResponse>>, ISecuredRequest
+public class DeleteOptionCommand : IRequest<CustomResponseDto<DeletedOptionResponse>>
 {
     public Guid Id { get; set; }
 
@@ -41,7 +39,7 @@ public class DeleteOptionCommand : IRequest<CustomResponseDto<DeletedOptionRespo
 
             DeletedOptionResponse response = _mapper.Map<DeletedOptionResponse>(option);
 
-             return CustomResponseDto<DeletedOptionResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<DeletedOptionResponse>.Success((int)HttpStatusCode.OK, response, true);
 
         }
     }

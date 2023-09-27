@@ -1,19 +1,17 @@
-using Application.Features.InvoiceOptions.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
-using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
+using Core.Domain.Entities;
 using Core.Persistence.Paging;
 using MediatR;
+using System.Net;
 using static Application.Features.InvoiceOptions.Constants.InvoiceOptionsOperationClaims;
 
 namespace Application.Features.InvoiceOptions.Queries.GetList;
 
-public class GetListInvoiceOptionQuery : IRequest<CustomResponseDto<GetListResponse<GetListInvoiceOptionListItemDto>>>, ISecuredRequest
+public class GetListInvoiceOptionQuery : IRequest<CustomResponseDto<GetListResponse<GetListInvoiceOptionListItemDto>>>
 {
     public PageRequest PageRequest { get; set; }
 
@@ -34,12 +32,12 @@ public class GetListInvoiceOptionQuery : IRequest<CustomResponseDto<GetListRespo
         {
             IPaginate<InvoiceOption> invoiceOptions = await _invoiceOptionRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
-                size: request.PageRequest.PageSize, 
+                size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken
             );
 
             GetListResponse<GetListInvoiceOptionListItemDto> response = _mapper.Map<GetListResponse<GetListInvoiceOptionListItemDto>>(invoiceOptions);
-             return CustomResponseDto<GetListResponse<GetListInvoiceOptionListItemDto>>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<GetListResponse<GetListInvoiceOptionListItemDto>>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

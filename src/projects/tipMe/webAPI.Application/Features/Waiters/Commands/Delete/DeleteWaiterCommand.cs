@@ -1,18 +1,16 @@
 using Application.Features.Waiters.Constants;
-using Application.Features.Waiters.Constants;
 using Application.Features.Waiters.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Waiters.Constants.WaitersOperationClaims;
 
 namespace Application.Features.Waiters.Commands.Delete;
 
-public class DeleteWaiterCommand : IRequest<CustomResponseDto<DeletedWaiterResponse>>, ISecuredRequest
+public class DeleteWaiterCommand : IRequest<CustomResponseDto<DeletedWaiterResponse>>
 {
     public Guid Id { get; set; }
 
@@ -41,7 +39,7 @@ public class DeleteWaiterCommand : IRequest<CustomResponseDto<DeletedWaiterRespo
 
             DeletedWaiterResponse response = _mapper.Map<DeletedWaiterResponse>(waiter);
 
-             return CustomResponseDto<DeletedWaiterResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<DeletedWaiterResponse>.Success((int)HttpStatusCode.OK, response, true);
 
         }
     }

@@ -3,15 +3,14 @@ using Application.Features.Tips.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Tips.Constants.TipsOperationClaims;
 
 namespace Application.Features.Tips.Commands.Create;
 
-public class CreateTipCommand : IRequest<CustomResponseDto<CreatedTipResponse>>, ISecuredRequest
+public class CreateTipCommand : IRequest<CustomResponseDto<CreatedTipResponse>>
 {
     public DateTime RequestDate { get; set; }
     public string QrCode { get; set; }
@@ -46,7 +45,7 @@ public class CreateTipCommand : IRequest<CustomResponseDto<CreatedTipResponse>>,
             await _tipRepository.AddAsync(tip);
 
             CreatedTipResponse response = _mapper.Map<CreatedTipResponse>(tip);
-         return CustomResponseDto<CreatedTipResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<CreatedTipResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

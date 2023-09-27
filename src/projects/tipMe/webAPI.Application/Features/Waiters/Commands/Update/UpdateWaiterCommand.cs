@@ -3,15 +3,14 @@ using Application.Features.Waiters.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Waiters.Constants.WaitersOperationClaims;
 
 namespace Application.Features.Waiters.Commands.Update;
 
-public class UpdateWaiterCommand : IRequest<CustomResponseDto<UpdatedWaiterResponse>>, ISecuredRequest
+public class UpdateWaiterCommand : IRequest<CustomResponseDto<UpdatedWaiterResponse>>
 {
     public Guid Id { get; set; }
     public Guid StoreId { get; set; }
@@ -44,7 +43,7 @@ public class UpdateWaiterCommand : IRequest<CustomResponseDto<UpdatedWaiterRespo
 
             UpdatedWaiterResponse response = _mapper.Map<UpdatedWaiterResponse>(waiter);
 
-          return CustomResponseDto<UpdatedWaiterResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<UpdatedWaiterResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

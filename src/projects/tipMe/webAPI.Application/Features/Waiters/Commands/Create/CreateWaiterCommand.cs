@@ -3,15 +3,14 @@ using Application.Features.Waiters.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Waiters.Constants.WaitersOperationClaims;
 
 namespace Application.Features.Waiters.Commands.Create;
 
-public class CreateWaiterCommand : IRequest<CustomResponseDto<CreatedWaiterResponse>>, ISecuredRequest
+public class CreateWaiterCommand : IRequest<CustomResponseDto<CreatedWaiterResponse>>
 {
     public Guid StoreId { get; set; }
     public string Name { get; set; }
@@ -40,7 +39,7 @@ public class CreateWaiterCommand : IRequest<CustomResponseDto<CreatedWaiterRespo
             await _waiterRepository.AddAsync(waiter);
 
             CreatedWaiterResponse response = _mapper.Map<CreatedWaiterResponse>(waiter);
-         return CustomResponseDto<CreatedWaiterResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<CreatedWaiterResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

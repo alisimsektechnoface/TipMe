@@ -3,15 +3,14 @@ using Application.Features.Tips.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Tips.Constants.TipsOperationClaims;
 
 namespace Application.Features.Tips.Commands.Update;
 
-public class UpdateTipCommand : IRequest<CustomResponseDto<UpdatedTipResponse>>, ISecuredRequest
+public class UpdateTipCommand : IRequest<CustomResponseDto<UpdatedTipResponse>>
 {
     public Guid Id { get; set; }
     public DateTime RequestDate { get; set; }
@@ -50,7 +49,7 @@ public class UpdateTipCommand : IRequest<CustomResponseDto<UpdatedTipResponse>>,
 
             UpdatedTipResponse response = _mapper.Map<UpdatedTipResponse>(tip);
 
-          return CustomResponseDto<UpdatedTipResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<UpdatedTipResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

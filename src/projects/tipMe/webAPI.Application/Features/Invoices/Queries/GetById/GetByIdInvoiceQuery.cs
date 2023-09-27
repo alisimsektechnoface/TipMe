@@ -1,17 +1,15 @@
-using Application.Features.Invoices.Constants;
 using Application.Features.Invoices.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Invoices.Constants.InvoicesOperationClaims;
 
 namespace Application.Features.Invoices.Queries.GetById;
 
-public class GetByIdInvoiceQuery : IRequest<CustomResponseDto<GetByIdInvoiceResponse>>, ISecuredRequest
+public class GetByIdInvoiceQuery : IRequest<CustomResponseDto<GetByIdInvoiceResponse>>
 {
     public Guid Id { get; set; }
 
@@ -37,7 +35,7 @@ public class GetByIdInvoiceQuery : IRequest<CustomResponseDto<GetByIdInvoiceResp
 
             GetByIdInvoiceResponse response = _mapper.Map<GetByIdInvoiceResponse>(invoice);
 
-          return CustomResponseDto<GetByIdInvoiceResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<GetByIdInvoiceResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

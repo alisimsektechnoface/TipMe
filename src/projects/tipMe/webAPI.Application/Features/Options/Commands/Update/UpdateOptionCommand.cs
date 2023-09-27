@@ -3,15 +3,14 @@ using Application.Features.Options.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Options.Constants.OptionsOperationClaims;
 
 namespace Application.Features.Options.Commands.Update;
 
-public class UpdateOptionCommand : IRequest<CustomResponseDto<UpdatedOptionResponse>>, ISecuredRequest
+public class UpdateOptionCommand : IRequest<CustomResponseDto<UpdatedOptionResponse>>
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -44,7 +43,7 @@ public class UpdateOptionCommand : IRequest<CustomResponseDto<UpdatedOptionRespo
 
             UpdatedOptionResponse response = _mapper.Map<UpdatedOptionResponse>(option);
 
-          return CustomResponseDto<UpdatedOptionResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<UpdatedOptionResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

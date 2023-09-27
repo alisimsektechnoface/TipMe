@@ -3,15 +3,16 @@ using Application.Features.Invoices.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
+using Core.Helpers.Helpers;
 using MediatR;
+using System.Net;
+using System.Text.Json.Serialization;
 using static Application.Features.Invoices.Constants.InvoicesOperationClaims;
 
 namespace Application.Features.Invoices.Commands.Create;
 
-public class CreateInvoiceCommand : IRequest<CustomResponseDto<CreatedInvoiceResponse>>, ISecuredRequest
+public class CreateInvoiceCommand : IRequest<CustomResponseDto<CreatedInvoiceResponse>>
 {
     public DateTime InvoiceDate { get; set; }
     public Guid StoreId { get; set; }
@@ -19,6 +20,7 @@ public class CreateInvoiceCommand : IRequest<CustomResponseDto<CreatedInvoiceRes
     public decimal Amount { get; set; }
     public DateTime TipDate { get; set; }
     public bool IsTipped { get; set; }
+    [JsonIgnore]
     public string QrCode { get; set; }
     public string Currency { get; set; }
 
@@ -41,11 +43,11 @@ public class CreateInvoiceCommand : IRequest<CustomResponseDto<CreatedInvoiceRes
         public async Task<CustomResponseDto<CreatedInvoiceResponse>> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
         {
             Invoice invoice = _mapper.Map<Invoice>(request);
-
+            invoice.QrCode = QrCodeHelpers.GenerateQrCode();
             await _invoiceRepository.AddAsync(invoice);
 
             CreatedInvoiceResponse response = _mapper.Map<CreatedInvoiceResponse>(invoice);
-         return CustomResponseDto<CreatedInvoiceResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<CreatedInvoiceResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

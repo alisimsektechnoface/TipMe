@@ -3,15 +3,14 @@ using Application.Features.Stores.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Stores.Constants.StoresOperationClaims;
 
 namespace Application.Features.Stores.Commands.Update;
 
-public class UpdateStoreCommand : IRequest<CustomResponseDto<UpdatedStoreResponse>>, ISecuredRequest
+public class UpdateStoreCommand : IRequest<CustomResponseDto<UpdatedStoreResponse>>
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -42,7 +41,7 @@ public class UpdateStoreCommand : IRequest<CustomResponseDto<UpdatedStoreRespons
 
             UpdatedStoreResponse response = _mapper.Map<UpdatedStoreResponse>(store);
 
-          return CustomResponseDto<UpdatedStoreResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<UpdatedStoreResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

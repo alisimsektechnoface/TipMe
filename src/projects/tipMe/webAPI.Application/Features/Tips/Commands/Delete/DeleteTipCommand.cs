@@ -1,18 +1,16 @@
 using Application.Features.Tips.Constants;
-using Application.Features.Tips.Constants;
 using Application.Features.Tips.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Tips.Constants.TipsOperationClaims;
 
 namespace Application.Features.Tips.Commands.Delete;
 
-public class DeleteTipCommand : IRequest<CustomResponseDto<DeletedTipResponse>>, ISecuredRequest
+public class DeleteTipCommand : IRequest<CustomResponseDto<DeletedTipResponse>>
 {
     public Guid Id { get; set; }
 
@@ -41,7 +39,7 @@ public class DeleteTipCommand : IRequest<CustomResponseDto<DeletedTipResponse>>,
 
             DeletedTipResponse response = _mapper.Map<DeletedTipResponse>(tip);
 
-             return CustomResponseDto<DeletedTipResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<DeletedTipResponse>.Success((int)HttpStatusCode.OK, response, true);
 
         }
     }

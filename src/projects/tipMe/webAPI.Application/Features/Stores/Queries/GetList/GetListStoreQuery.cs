@@ -1,19 +1,17 @@
-using Application.Features.Stores.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
-using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
+using Core.Domain.Entities;
 using Core.Persistence.Paging;
 using MediatR;
+using System.Net;
 using static Application.Features.Stores.Constants.StoresOperationClaims;
 
 namespace Application.Features.Stores.Queries.GetList;
 
-public class GetListStoreQuery : IRequest<CustomResponseDto<GetListResponse<GetListStoreListItemDto>>>, ISecuredRequest
+public class GetListStoreQuery : IRequest<CustomResponseDto<GetListResponse<GetListStoreListItemDto>>>
 {
     public PageRequest PageRequest { get; set; }
 
@@ -34,12 +32,12 @@ public class GetListStoreQuery : IRequest<CustomResponseDto<GetListResponse<GetL
         {
             IPaginate<Store> stores = await _storeRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
-                size: request.PageRequest.PageSize, 
+                size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken
             );
 
             GetListResponse<GetListStoreListItemDto> response = _mapper.Map<GetListResponse<GetListStoreListItemDto>>(stores);
-             return CustomResponseDto<GetListResponse<GetListStoreListItemDto>>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<GetListResponse<GetListStoreListItemDto>>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

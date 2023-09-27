@@ -1,17 +1,15 @@
-using Application.Features.Stores.Constants;
 using Application.Features.Stores.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Stores.Constants.StoresOperationClaims;
 
 namespace Application.Features.Stores.Queries.GetById;
 
-public class GetByIdStoreQuery : IRequest<CustomResponseDto<GetByIdStoreResponse>>, ISecuredRequest
+public class GetByIdStoreQuery : IRequest<CustomResponseDto<GetByIdStoreResponse>>
 {
     public Guid Id { get; set; }
 
@@ -37,7 +35,7 @@ public class GetByIdStoreQuery : IRequest<CustomResponseDto<GetByIdStoreResponse
 
             GetByIdStoreResponse response = _mapper.Map<GetByIdStoreResponse>(store);
 
-          return CustomResponseDto<GetByIdStoreResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<GetByIdStoreResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

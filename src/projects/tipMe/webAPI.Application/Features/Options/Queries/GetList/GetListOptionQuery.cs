@@ -1,19 +1,17 @@
-using Application.Features.Options.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
-using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
+using Core.Domain.Entities;
 using Core.Persistence.Paging;
 using MediatR;
+using System.Net;
 using static Application.Features.Options.Constants.OptionsOperationClaims;
 
 namespace Application.Features.Options.Queries.GetList;
 
-public class GetListOptionQuery : IRequest<CustomResponseDto<GetListResponse<GetListOptionListItemDto>>>, ISecuredRequest
+public class GetListOptionQuery : IRequest<CustomResponseDto<GetListResponse<GetListOptionListItemDto>>>
 {
     public PageRequest PageRequest { get; set; }
 
@@ -34,12 +32,12 @@ public class GetListOptionQuery : IRequest<CustomResponseDto<GetListResponse<Get
         {
             IPaginate<Option> options = await _optionRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
-                size: request.PageRequest.PageSize, 
+                size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken
             );
 
             GetListResponse<GetListOptionListItemDto> response = _mapper.Map<GetListResponse<GetListOptionListItemDto>>(options);
-             return CustomResponseDto<GetListResponse<GetListOptionListItemDto>>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<GetListResponse<GetListOptionListItemDto>>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

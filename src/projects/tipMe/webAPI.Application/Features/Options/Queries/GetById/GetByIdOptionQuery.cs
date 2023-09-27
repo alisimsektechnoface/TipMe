@@ -1,17 +1,15 @@
-using Application.Features.Options.Constants;
 using Application.Features.Options.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Options.Constants.OptionsOperationClaims;
 
 namespace Application.Features.Options.Queries.GetById;
 
-public class GetByIdOptionQuery : IRequest<CustomResponseDto<GetByIdOptionResponse>>, ISecuredRequest
+public class GetByIdOptionQuery : IRequest<CustomResponseDto<GetByIdOptionResponse>>
 {
     public Guid Id { get; set; }
 
@@ -37,7 +35,7 @@ public class GetByIdOptionQuery : IRequest<CustomResponseDto<GetByIdOptionRespon
 
             GetByIdOptionResponse response = _mapper.Map<GetByIdOptionResponse>(option);
 
-          return CustomResponseDto<GetByIdOptionResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<GetByIdOptionResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

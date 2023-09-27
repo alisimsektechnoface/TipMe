@@ -1,17 +1,15 @@
-using Application.Features.Tips.Constants;
 using Application.Features.Tips.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Tips.Constants.TipsOperationClaims;
 
 namespace Application.Features.Tips.Queries.GetById;
 
-public class GetByIdTipQuery : IRequest<CustomResponseDto<GetByIdTipResponse>>, ISecuredRequest
+public class GetByIdTipQuery : IRequest<CustomResponseDto<GetByIdTipResponse>>
 {
     public Guid Id { get; set; }
 
@@ -37,7 +35,7 @@ public class GetByIdTipQuery : IRequest<CustomResponseDto<GetByIdTipResponse>>, 
 
             GetByIdTipResponse response = _mapper.Map<GetByIdTipResponse>(tip);
 
-          return CustomResponseDto<GetByIdTipResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<GetByIdTipResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }

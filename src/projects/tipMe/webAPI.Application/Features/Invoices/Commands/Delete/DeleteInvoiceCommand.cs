@@ -1,18 +1,16 @@
 using Application.Features.Invoices.Constants;
-using Application.Features.Invoices.Constants;
 using Application.Features.Invoices.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Invoices.Constants.InvoicesOperationClaims;
 
 namespace Application.Features.Invoices.Commands.Delete;
 
-public class DeleteInvoiceCommand : IRequest<CustomResponseDto<DeletedInvoiceResponse>>, ISecuredRequest
+public class DeleteInvoiceCommand : IRequest<CustomResponseDto<DeletedInvoiceResponse>>
 {
     public Guid Id { get; set; }
 
@@ -41,7 +39,7 @@ public class DeleteInvoiceCommand : IRequest<CustomResponseDto<DeletedInvoiceRes
 
             DeletedInvoiceResponse response = _mapper.Map<DeletedInvoiceResponse>(invoice);
 
-             return CustomResponseDto<DeletedInvoiceResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<DeletedInvoiceResponse>.Success((int)HttpStatusCode.OK, response, true);
 
         }
     }

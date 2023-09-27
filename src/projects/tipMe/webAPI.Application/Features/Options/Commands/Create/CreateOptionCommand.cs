@@ -3,15 +3,14 @@ using Application.Features.Options.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using System.Net;
 using Core.Domain.Entities;
-using Core.Application.Pipelines.Authorization;
 using MediatR;
+using System.Net;
 using static Application.Features.Options.Constants.OptionsOperationClaims;
 
 namespace Application.Features.Options.Commands.Create;
 
-public class CreateOptionCommand : IRequest<CustomResponseDto<CreatedOptionResponse>>, ISecuredRequest
+public class CreateOptionCommand : IRequest<CustomResponseDto<CreatedOptionResponse>>
 {
     public string Name { get; set; }
     public string Icon { get; set; }
@@ -40,7 +39,7 @@ public class CreateOptionCommand : IRequest<CustomResponseDto<CreatedOptionRespo
             await _optionRepository.AddAsync(option);
 
             CreatedOptionResponse response = _mapper.Map<CreatedOptionResponse>(option);
-         return CustomResponseDto<CreatedOptionResponse>.Success((int)HttpStatusCode.OK, response, true);
+            return CustomResponseDto<CreatedOptionResponse>.Success((int)HttpStatusCode.OK, response, true);
         }
     }
 }
