@@ -10,9 +10,5 @@ public class CreateInvoiceCommandValidator : AbstractValidator<CreateInvoiceComm
         RuleFor(c => c.StoreId).NotEmpty();
         RuleFor(c => c.WaiterId).NotEmpty();
         RuleFor(c => c.Amount).NotEmpty();
-        RuleFor(c => c.TipDate).NotEmpty();
-        RuleFor(c => c.IsTipped).NotEmpty();
-        RuleFor(c => c.QrCode).NotEmpty();
-        RuleFor(c => c.Currency).NotEmpty();
     }
 }

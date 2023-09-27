@@ -18,11 +18,11 @@ public class CreateInvoiceCommand : IRequest<CustomResponseDto<CreatedInvoiceRes
     public Guid StoreId { get; set; }
     public Guid WaiterId { get; set; }
     public decimal Amount { get; set; }
-    public DateTime TipDate { get; set; }
+    public DateTime? TipDate { get; set; }
     public bool IsTipped { get; set; }
     [JsonIgnore]
-    public string QrCode { get; set; }
-    public string Currency { get; set; }
+    public string? QrCode { get; set; }
+    public string? Currency { get; set; }
 
     public string[] Roles => new[] { Admin, Write, InvoicesOperationClaims.Create };
 

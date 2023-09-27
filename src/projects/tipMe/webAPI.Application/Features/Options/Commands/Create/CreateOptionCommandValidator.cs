@@ -7,7 +7,5 @@ public class CreateOptionCommandValidator : AbstractValidator<CreateOptionComman
     public CreateOptionCommandValidator()
     {
         RuleFor(c => c.Name).NotEmpty();
-        RuleFor(c => c.Icon).NotEmpty();
-        RuleFor(c => c.IsHappy).NotEmpty();
     }
 }
