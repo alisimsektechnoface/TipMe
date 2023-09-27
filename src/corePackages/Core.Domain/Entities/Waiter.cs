@@ -7,6 +7,7 @@ namespace Core.Domain.Entities
         public Guid StoreId { get; set; }
         public string Name { get; set; }
         public string Photo { get; set; }
+        public Store Store { get; set; }
 
         public Waiter()
         {

@@ -1,15 +1,17 @@
 using Core.Domain.Entities;
 using Core.Persistence.Configurations.Base;
+using Core.Persistence.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Persistence.EntityConfigurations;
 
-public class StoreConfiguration : BaseConfiguration<Store,Guid>
+public class StoreConfiguration : BaseConfiguration<Store, Guid>
 {
     public override void Configure(EntityTypeBuilder<Store> builder)
     {
-        
-                builder.Property(s => s.Name).HasColumnName("Name");
-       
+
+        base.Configure(builder);
+        builder.ToTable(TableNameConstants.STORE);
+        builder.Property(s => s.Name).HasColumnName("Name");
     }
 }

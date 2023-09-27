@@ -12,6 +12,8 @@ namespace Core.Domain.Entities
         public bool IsTipped { get; set; }
         public string QrCode { get; set; }
         public string Currency { get; set; }
+        public Store Store { get; set; }
+        public Waiter Waiter { get; set; }
 
         public Invoice()
         {

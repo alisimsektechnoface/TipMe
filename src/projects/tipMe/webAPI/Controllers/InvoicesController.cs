@@ -5,8 +5,8 @@ using Application.Features.Invoices.Queries.GetById;
 using Application.Features.Invoices.Queries.GetList;
 using Core.Application.Requests;
 using Core.Application.Responses;
-using Microsoft.AspNetCore.Mvc;
 using Core.Application.ResponseTypes.Concrete;
+using Microsoft.AspNetCore.Mvc;
 using webAPI.Controllers.Base;
 
 namespace WebAPI.Controllers;
@@ -50,7 +50,8 @@ public class InvoicesController : BaseController
     public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
     {
         GetListInvoiceQuery getListInvoiceQuery = new() { PageRequest = pageRequest };
-       CustomResponseDto<GetListResponse<GetListInvoiceListItemDto>> response = await Mediator.Send(getListInvoiceQuery);
+        CustomResponseDto<GetListResponse<GetListInvoiceListItemDto>> response = await Mediator.Send(getListInvoiceQuery);
         return Ok(response);
     }
+
 }

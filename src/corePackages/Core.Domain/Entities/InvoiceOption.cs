@@ -6,6 +6,8 @@ namespace Core.Domain.Entities
     {
         public Guid InvoiceId { get; set; }
         public Guid OptionId { get; set; }
+        public Invoice Invoice { get; set; }
+        public Option Option { get; set; }
 
         public InvoiceOption()
         {
