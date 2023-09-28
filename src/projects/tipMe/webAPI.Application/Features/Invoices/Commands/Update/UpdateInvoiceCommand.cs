@@ -18,7 +18,7 @@ public class UpdateInvoiceCommand : IRequest<CustomResponseDto<UpdatedInvoiceRes
     public Guid StoreId { get; set; }
     public Guid WaiterId { get; set; }
     public decimal Amount { get; set; }
-    public DateTime TipDate { get; set; }
+    public DateTime? TipDate { get; set; }
     public bool IsTipped { get; set; }
     [JsonIgnore]
     public string QrCode { get; set; }

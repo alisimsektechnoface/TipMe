@@ -11,4 +11,5 @@ public static class InvoicesOperationClaims
     public const string Update = "Invoices.Update";
     public const string Delete = "Invoices.Delete";
     public const string GenerateInvoice = "Invoices.GenerateInvoice";
+    public const string GetByQrCode = "Invoices.GetByQrCode";
 }

@@ -1,5 +1,6 @@
-using Core.Persistence.Paging;
+using Application.Features.Invoices.Queries.GetByQrCode;
 using Core.Domain.Entities;
+using Core.Persistence.Paging;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
@@ -27,4 +28,5 @@ public interface IInvoicesService
     Task<Invoice> AddAsync(Invoice invoice);
     Task<Invoice> UpdateAsync(Invoice invoice);
     Task<Invoice> DeleteAsync(Invoice invoice, bool permanent = false);
+    Task<GetByQrCodeResponse> GetByQrCode(string qrCode, CancellationToken cancellationToken);
 }

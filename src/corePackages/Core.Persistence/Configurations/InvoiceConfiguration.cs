@@ -17,8 +17,8 @@ public class InvoiceConfiguration : BaseConfiguration<Invoice, Guid>
         builder.HasOne(w => w.Store).WithMany().HasForeignKey(w => w.StoreId).OnDelete(DeleteBehavior.Restrict);
         builder.Property(i => i.WaiterId).HasColumnName("WaiterId");
         builder.HasOne(w => w.Waiter).WithMany().HasForeignKey(w => w.WaiterId).OnDelete(DeleteBehavior.Restrict);
-        builder.Property(i => i.Amount).HasColumnName("Amount");
-        builder.Property(i => i.TipDate).HasColumnName("TipDate");
+        builder.Property(i => i.Amount).HasColumnName("Amount").HasPrecision(18, 2);
+        builder.Property(i => i.TipDate).HasColumnName("TipDate").IsRequired(false);
         builder.Property(i => i.IsTipped).HasColumnName("IsTipped");
         builder.Property(i => i.QrCode).HasColumnName("QrCode");
         builder.Property(i => i.Currency).HasColumnName("Currency");

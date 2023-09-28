@@ -2,6 +2,7 @@ using Application.Features.Invoices.Commands.Create;
 using Application.Features.Invoices.Commands.Delete;
 using Application.Features.Invoices.Commands.Update;
 using Application.Features.Invoices.Queries.GetById;
+using Application.Features.Invoices.Queries.GetByQrCode;
 using Application.Features.Invoices.Queries.GetList;
 using Core.Application.Requests;
 using Core.Application.Responses;
@@ -54,4 +55,12 @@ public class InvoicesController : BaseController
         return Ok(response);
     }
 
+
+    [HttpGet("GetByQrCode/{QrCode}")]
+    public async Task<IActionResult> GetByQrCode([FromRoute] string QrCode)
+    {
+        GetByQrCodeQuery getByQrCodeQuery = new GetByQrCodeQuery() { QrCode = QrCode };
+        CustomResponseDto<GetByQrCodeResponse> response = await Mediator.Send(getByQrCodeQuery);
+        return Ok(response);
+    }
 }

@@ -10,4 +10,5 @@ public static class OptionsOperationClaims
     public const string Create = "Options.Create";
     public const string Update = "Options.Update";
     public const string Delete = "Options.Delete";
+    public const string GetOptionsWithGroup = "Options.GetOptionsWithGroup";
 }

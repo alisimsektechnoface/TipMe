@@ -2,6 +2,7 @@ using Application.Features.Invoices.Commands.Create;
 using Application.Features.Invoices.Commands.Delete;
 using Application.Features.Invoices.Commands.Update;
 using Application.Features.Invoices.Queries.GetById;
+using Application.Features.Invoices.Queries.GetByQrCode;
 using Application.Features.Invoices.Queries.GetList;
 using AutoMapper;
 using Core.Application.Responses;
@@ -21,6 +22,7 @@ public class MappingProfiles : Profile
         CreateMap<Invoice, DeleteInvoiceCommand>().ReverseMap();
         CreateMap<Invoice, DeletedInvoiceResponse>().ReverseMap();
         CreateMap<Invoice, GetByIdInvoiceResponse>().ReverseMap();
+        CreateMap<Invoice, GetByQrCodeResponse>().ReverseMap();
         CreateMap<Invoice, GetListInvoiceListItemDto>().ReverseMap();
         CreateMap<IPaginate<Invoice>, GetListResponse<GetListInvoiceListItemDto>>().ReverseMap();
     }

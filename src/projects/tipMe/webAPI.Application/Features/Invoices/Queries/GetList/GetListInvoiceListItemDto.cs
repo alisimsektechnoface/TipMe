@@ -9,7 +9,7 @@ public class GetListInvoiceListItemDto : IDto
     public Guid StoreId { get; set; }
     public Guid WaiterId { get; set; }
     public decimal Amount { get; set; }
-    public DateTime TipDate { get; set; }
+    public DateTime? TipDate { get; set; }
     public bool IsTipped { get; set; }
     public string QrCode { get; set; }
     public string Currency { get; set; }

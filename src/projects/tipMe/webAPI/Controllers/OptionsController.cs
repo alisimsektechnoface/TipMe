@@ -3,10 +3,11 @@ using Application.Features.Options.Commands.Delete;
 using Application.Features.Options.Commands.Update;
 using Application.Features.Options.Queries.GetById;
 using Application.Features.Options.Queries.GetList;
+using Application.Features.Options.Queries.GetOptionsWithGroup;
 using Core.Application.Requests;
 using Core.Application.Responses;
-using Microsoft.AspNetCore.Mvc;
 using Core.Application.ResponseTypes.Concrete;
+using Microsoft.AspNetCore.Mvc;
 using webAPI.Controllers.Base;
 
 namespace WebAPI.Controllers;
@@ -50,7 +51,15 @@ public class OptionsController : BaseController
     public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
     {
         GetListOptionQuery getListOptionQuery = new() { PageRequest = pageRequest };
-       CustomResponseDto<GetListResponse<GetListOptionListItemDto>> response = await Mediator.Send(getListOptionQuery);
+        CustomResponseDto<GetListResponse<GetListOptionListItemDto>> response = await Mediator.Send(getListOptionQuery);
+        return Ok(response);
+    }
+
+    [HttpGet("GetOptionsWithGroup")]
+    public async Task<IActionResult> GetOptionsWithGroup()
+    {
+        GetOptionsWithGroupQuery getOptionsWithGroupQuery = new();
+        CustomResponseDto<GetOptionsWithGroupResponse> response = await Mediator.Send(getOptionsWithGroupQuery);
         return Ok(response);
     }
 }

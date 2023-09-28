@@ -1,7 +1,12 @@
+using Application.Features.Invoices.Queries.GetByQrCode;
 using Application.Features.Invoices.Rules;
+using Application.Features.Options.Queries.GetById;
+using Application.Features.Options.Queries.GetOptionsWithGroup;
 using Application.Services.Repositories;
-using Core.Persistence.Paging;
+using AutoMapper;
 using Core.Domain.Entities;
+using Core.Persistence.Paging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
@@ -9,12 +14,16 @@ namespace Application.Services.Invoices;
 
 public class InvoicesManager : IInvoicesService
 {
+    private readonly IMapper _mapper;
     private readonly IInvoiceRepository _invoiceRepository;
+    private readonly IOptionRepository _optionRepository;
     private readonly InvoiceBusinessRules _invoiceBusinessRules;
 
-    public InvoicesManager(IInvoiceRepository invoiceRepository, InvoiceBusinessRules invoiceBusinessRules)
+    public InvoicesManager(IMapper mapper, IInvoiceRepository invoiceRepository, IOptionRepository optionRepository, InvoiceBusinessRules invoiceBusinessRules)
     {
+        _mapper = mapper;
         _invoiceRepository = invoiceRepository;
+        _optionRepository = optionRepository;
         _invoiceBusinessRules = invoiceBusinessRules;
     }
 
@@ -73,5 +82,31 @@ public class InvoicesManager : IInvoicesService
         Invoice deletedInvoice = await _invoiceRepository.DeleteAsync(invoice);
 
         return deletedInvoice;
+    }
+
+    public async Task<GetByQrCodeResponse> GetByQrCode(string qrCode, CancellationToken cancellationToken)
+    {
+        Invoice? invoice = await _invoiceRepository.GetAsync(predicate: i => i.QrCode == qrCode,
+                include: i => i.Include(x => x.Store).Include(x => x.Waiter),
+                cancellationToken: cancellationToken);
+        await _invoiceBusinessRules.InvoiceShouldExistWhenSelected(invoice);
+
+        GetByQrCodeResponse response = _mapper.Map<GetByQrCodeResponse>(invoice);
+
+        var groupedItems = await _optionRepository.Query().GroupBy(item => item.IsHappy).ToListAsync();
+        GetOptionsWithGroupResponse options = new GetOptionsWithGroupResponse();
+        foreach (var group in groupedItems)
+        {
+            if (group.Key)
+            {
+                options.Happy = _mapper.Map<List<GetByIdOptionResponse>>(group.ToList());
+            }
+            else
+            {
+                options.Unhappy = _mapper.Map<List<GetByIdOptionResponse>>(group.ToList());
+            }
+        }
+        response.Options = options;
+        return response;
     }
 }

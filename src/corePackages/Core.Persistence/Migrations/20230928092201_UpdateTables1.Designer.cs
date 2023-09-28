@@ -4,6 +4,7 @@ using Core.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Core.Persistence.Migrations
 {
     [DbContext(typeof(BaseDbContext))]
-    partial class BaseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230928092201_UpdateTables1")]
+    partial class UpdateTables1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -580,9 +583,9 @@ namespace Core.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7911d86f-4b57-4faa-9d9f-99158077da46"),
+                            Id = new Guid("5841449c-4b34-454a-acc1-d802ee198530"),
                             CreatedBy = "Admin",
-                            CreatedDate = new DateTime(2023, 9, 28, 15, 37, 15, 684, DateTimeKind.Local).AddTicks(586),
+                            CreatedDate = new DateTime(2023, 9, 28, 12, 22, 1, 160, DateTimeKind.Local).AddTicks(4118),
                             IsDeleted = false,
                             Name = "Admin",
                             Status = 1
@@ -928,11 +931,6 @@ namespace Core.Persistence.Migrations
                         .HasDefaultValue(1)
                         .HasColumnName("Status");
 
-                    b.Property<decimal?>("TipAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("TipAmount");
-
                     b.HasKey("Id");
 
                     b.ToTable("Tips", (string)null);
@@ -1030,17 +1028,17 @@ namespace Core.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("27089910-95fb-4936-a0c3-e3ab0a0f6740"),
+                            Id = new Guid("8435d78f-cfe4-4a6b-b6b7-4b686761379c"),
                             AuthenticatorType = 0,
                             CreatedBy = "Admin",
-                            CreatedDate = new DateTime(2023, 9, 28, 15, 37, 15, 685, DateTimeKind.Local).AddTicks(2859),
+                            CreatedDate = new DateTime(2023, 9, 28, 12, 22, 1, 161, DateTimeKind.Local).AddTicks(4670),
                             CultureType = 0,
                             Email = "admin@admin.com",
                             FirstName = "Admin",
                             IsDeleted = false,
                             LastName = "Admin",
-                            PasswordHash = new byte[] { 255, 225, 230, 50, 179, 240, 167, 31, 171, 101, 104, 184, 207, 65, 87, 115, 1, 61, 215, 248, 220, 124, 238, 8, 13, 121, 187, 50, 177, 48, 55, 46, 147, 245, 116, 252, 58, 67, 194, 28, 208, 120, 160, 4, 232, 223, 99, 187, 248, 100, 17, 2, 94, 132, 113, 199, 93, 226, 219, 239, 246, 124, 185, 184 },
-                            PasswordSalt = new byte[] { 111, 191, 121, 106, 143, 163, 105, 9, 21, 193, 30, 3, 61, 51, 233, 242, 255, 162, 241, 137, 207, 165, 189, 77, 126, 248, 181, 68, 203, 196, 129, 142, 162, 53, 107, 69, 134, 230, 88, 81, 2, 31, 151, 101, 164, 175, 236, 18, 215, 211, 253, 108, 209, 65, 3, 25, 109, 48, 31, 214, 80, 124, 66, 137, 196, 183, 248, 133, 58, 62, 63, 80, 49, 106, 132, 1, 14, 208, 209, 20, 60, 180, 164, 62, 83, 109, 5, 91, 93, 242, 71, 100, 186, 29, 6, 77, 34, 9, 237, 4, 8, 250, 136, 3, 133, 137, 3, 115, 255, 35, 200, 133, 10, 243, 36, 61, 189, 181, 51, 202, 26, 82, 22, 100, 43, 56, 10, 6 },
+                            PasswordHash = new byte[] { 92, 244, 195, 46, 10, 206, 187, 196, 72, 33, 167, 212, 154, 32, 248, 51, 28, 69, 73, 80, 110, 156, 173, 108, 114, 100, 51, 194, 113, 38, 173, 98, 22, 224, 65, 145, 227, 0, 1, 14, 16, 217, 116, 137, 161, 28, 7, 35, 203, 81, 221, 147, 99, 33, 179, 19, 161, 243, 203, 195, 147, 145, 65, 44 },
+                            PasswordSalt = new byte[] { 5, 240, 238, 118, 30, 128, 171, 184, 252, 21, 94, 19, 221, 151, 19, 249, 247, 91, 154, 163, 101, 36, 242, 141, 155, 228, 7, 18, 9, 46, 111, 67, 78, 244, 223, 247, 102, 239, 63, 203, 181, 106, 213, 203, 151, 167, 18, 246, 49, 255, 43, 89, 127, 164, 114, 144, 18, 93, 221, 186, 115, 197, 12, 198, 150, 42, 252, 139, 204, 105, 61, 185, 44, 193, 49, 139, 198, 175, 103, 76, 143, 95, 231, 200, 63, 5, 63, 42, 240, 243, 226, 54, 14, 180, 12, 201, 161, 183, 167, 154, 97, 223, 248, 73, 244, 164, 196, 75, 176, 177, 14, 120, 168, 82, 30, 151, 135, 139, 31, 248, 201, 133, 23, 45, 39, 52, 219, 180 },
                             Status = 1
                         });
                 });
@@ -1109,13 +1107,13 @@ namespace Core.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("721a810d-2698-474c-ab4c-69066d9a2556"),
+                            Id = new Guid("027b47df-be82-4315-80f1-b047607b0808"),
                             CreatedBy = "Admin",
-                            CreatedDate = new DateTime(2023, 9, 28, 15, 37, 15, 685, DateTimeKind.Local).AddTicks(9406),
+                            CreatedDate = new DateTime(2023, 9, 28, 12, 22, 1, 161, DateTimeKind.Local).AddTicks(9778),
                             IsDeleted = false,
-                            OperationClaimId = new Guid("7911d86f-4b57-4faa-9d9f-99158077da46"),
+                            OperationClaimId = new Guid("5841449c-4b34-454a-acc1-d802ee198530"),
                             Status = 1,
-                            UserId = new Guid("27089910-95fb-4936-a0c3-e3ab0a0f6740")
+                            UserId = new Guid("8435d78f-cfe4-4a6b-b6b7-4b686761379c")
                         });
                 });
 
