@@ -8,6 +8,7 @@ namespace Application.Features.Invoices.Queries.GetByQrCode;
 public class GetByQrCodeResponse : IResponse
 {
     public Guid Id { get; set; }
+    public Guid? TipId { get; set; }
     public DateTime InvoiceDate { get; set; }
     public Guid StoreId { get; set; }
     public Guid WaiterId { get; set; }

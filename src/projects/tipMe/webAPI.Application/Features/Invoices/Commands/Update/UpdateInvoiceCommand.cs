@@ -23,20 +23,24 @@ public class UpdateInvoiceCommand : IRequest<CustomResponseDto<UpdatedInvoiceRes
     [JsonIgnore]
     public string QrCode { get; set; }
     public string Currency { get; set; }
-
+    public List<Guid> Options { get; set; }
     public string[] Roles => new[] { Admin, Write, InvoicesOperationClaims.Update };
 
     public class UpdateInvoiceCommandHandler : IRequestHandler<UpdateInvoiceCommand, CustomResponseDto<UpdatedInvoiceResponse>>
     {
         private readonly IMapper _mapper;
         private readonly IInvoiceRepository _invoiceRepository;
+        private readonly ITipRepository _tipRepository;
+        private readonly IInvoiceOptionRepository _invoiceOptionRepository;
         private readonly InvoiceBusinessRules _invoiceBusinessRules;
 
-        public UpdateInvoiceCommandHandler(IMapper mapper, IInvoiceRepository invoiceRepository,
+        public UpdateInvoiceCommandHandler(IMapper mapper, IInvoiceRepository invoiceRepository, ITipRepository tipRepository, IInvoiceOptionRepository invoiceOptionRepository,
                                          InvoiceBusinessRules invoiceBusinessRules)
         {
             _mapper = mapper;
             _invoiceRepository = invoiceRepository;
+            _tipRepository = tipRepository;
+            _invoiceOptionRepository = invoiceOptionRepository;
             _invoiceBusinessRules = invoiceBusinessRules;
         }
 
@@ -49,6 +53,11 @@ public class UpdateInvoiceCommand : IRequest<CustomResponseDto<UpdatedInvoiceRes
             await _invoiceRepository.UpdateAsync(invoice!);
 
             UpdatedInvoiceResponse response = _mapper.Map<UpdatedInvoiceResponse>(invoice);
+
+            foreach (var item in request.Options)
+            {
+                await _invoiceOptionRepository.AddAsync(new() { InvoiceId = invoice.Id, OptionId = item });
+            }
 
             return CustomResponseDto<UpdatedInvoiceResponse>.Success((int)HttpStatusCode.OK, response, true);
         }

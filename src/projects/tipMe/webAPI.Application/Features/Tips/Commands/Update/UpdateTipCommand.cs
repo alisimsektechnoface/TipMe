@@ -23,19 +23,24 @@ public class UpdateTipCommand : IRequest<CustomResponseDto<UpdatedTipResponse>>
     public string? Comment { get; set; }
     public DateTime? CommentDate { get; set; }
     public int? Point { get; set; }
+    public List<Guid> Options { get; set; }
 
     public string[] Roles => new[] { Admin, Write, TipsOperationClaims.Update };
 
     public class UpdateTipCommandHandler : IRequestHandler<UpdateTipCommand, CustomResponseDto<UpdatedTipResponse>>
     {
         private readonly IMapper _mapper;
+        private readonly IInvoiceRepository _invoiceRepository;
         private readonly ITipRepository _tipRepository;
+        private readonly IInvoiceOptionRepository _invoiceOptionRepository;
         private readonly TipBusinessRules _tipBusinessRules;
 
-        public UpdateTipCommandHandler(IMapper mapper, ITipRepository tipRepository,
+        public UpdateTipCommandHandler(IMapper mapper, ITipRepository tipRepository, IInvoiceOptionRepository invoiceOptionRepository, IInvoiceRepository invoiceRepository,
                                          TipBusinessRules tipBusinessRules)
         {
             _mapper = mapper;
+            _invoiceOptionRepository = invoiceOptionRepository;
+            _invoiceRepository = invoiceRepository;
             _tipRepository = tipRepository;
             _tipBusinessRules = tipBusinessRules;
         }
@@ -47,6 +52,12 @@ public class UpdateTipCommand : IRequest<CustomResponseDto<UpdatedTipResponse>>
             tip = _mapper.Map(request, tip);
 
             await _tipRepository.UpdateAsync(tip!);
+
+            Invoice? invoice = await _invoiceRepository.GetAsync(predicate: x => x.QrCode == tip.QrCode, cancellationToken: cancellationToken);
+            foreach (var item in request.Options)
+            {
+                await _invoiceOptionRepository.AddAsync(new() { InvoiceId = invoice.Id, OptionId = item });
+            }
 
             UpdatedTipResponse response = _mapper.Map<UpdatedTipResponse>(tip);
 

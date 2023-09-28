@@ -8,7 +8,5 @@ public class UpdateInvoiceCommandValidator : AbstractValidator<UpdateInvoiceComm
     {
         RuleFor(c => c.Id).NotEmpty();
         RuleFor(c => c.InvoiceDate).NotEmpty();
-        RuleFor(c => c.StoreId).NotEmpty();
-        RuleFor(c => c.WaiterId).NotEmpty();
     }
 }

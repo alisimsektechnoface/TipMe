@@ -1,5 +1,4 @@
 using Application.Features.Invoices.Commands.Create;
-using Application.Features.Invoices.Commands.Delete;
 using Application.Features.Invoices.Commands.Update;
 using Application.Features.Invoices.Queries.GetById;
 using Application.Features.Invoices.Queries.GetByQrCode;
@@ -32,13 +31,13 @@ public class InvoicesController : BaseController
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] Guid id)
-    {
-        CustomResponseDto<DeletedInvoiceResponse> response = await Mediator.Send(new DeleteInvoiceCommand { Id = id });
+    //[HttpDelete("{id}")]
+    //public async Task<IActionResult> Delete([FromRoute] Guid id)
+    //{
+    //    CustomResponseDto<DeletedInvoiceResponse> response = await Mediator.Send(new DeleteInvoiceCommand { Id = id });
 
-        return Ok(response);
-    }
+    //    return Ok(response);
+    //}
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
