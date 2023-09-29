@@ -1,5 +1,6 @@
-using Core.Persistence.Paging;
 using Core.Domain.Entities;
+using Core.Persistence.Paging;
+using Iyzipay.Model;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
@@ -27,4 +28,6 @@ public interface ITipsService
     Task<Tip> AddAsync(Tip tip);
     Task<Tip> UpdateAsync(Tip tip);
     Task<Tip> DeleteAsync(Tip tip, bool permanent = false);
+    Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, string redirectUrl, Invoice invoice);
+    Task<CheckoutForm> PaymentResult(string token);
 }

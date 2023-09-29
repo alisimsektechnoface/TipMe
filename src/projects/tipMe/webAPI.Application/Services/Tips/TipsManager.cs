@@ -1,7 +1,9 @@
 using Application.Features.Tips.Rules;
 using Application.Services.Repositories;
-using Core.Persistence.Paging;
 using Core.Domain.Entities;
+using Core.Persistence.Paging;
+using Iyzipay.Model;
+using Iyzipay.Request;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
@@ -73,5 +75,86 @@ public class TipsManager : ITipsService
         Tip deletedTip = await _tipRepository.DeleteAsync(tip);
 
         return deletedTip;
+    }
+
+    public async Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, string redirectUrl, Invoice invoice)
+    {
+        string price = tipAmount.ToString().Replace(",", ".");
+
+        CreateCheckoutFormInitializeRequest paymentRequest = new CreateCheckoutFormInitializeRequest();
+        //CreatePaymentRequest paymentRequest = new CreatePaymentRequest();
+        paymentRequest.Locale = Locale.TR.ToString();
+        paymentRequest.ConversationId = invoice.Id.ToString();
+        paymentRequest.Price = price;
+        paymentRequest.PaidPrice = price;
+        paymentRequest.Currency = Currency.TRY.ToString();
+        paymentRequest.BasketId = invoice.Id.ToString();
+        paymentRequest.PaymentGroup = PaymentGroup.PRODUCT.ToString();
+        paymentRequest.CallbackUrl = redirectUrl + "/" + invoice.QrCode;
+
+        Buyer buyer = new Buyer();
+        buyer.Id = "BY789";
+        buyer.Name = "John";
+        buyer.Surname = "Doe";
+        buyer.GsmNumber = "+905350000000";
+        buyer.Email = "email@email.com";
+        buyer.IdentityNumber = "74300864791";
+        buyer.LastLoginDate = "2015-10-05 12:43:35";
+        buyer.RegistrationDate = "2013-04-21 15:12:09";
+        buyer.RegistrationAddress = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
+        buyer.Ip = "85.34.78.112";
+        buyer.City = "Istanbul";
+        buyer.Country = "Turkey";
+        buyer.ZipCode = "34732";
+        paymentRequest.Buyer = buyer;
+
+        Address billingAddress = new Address();
+        billingAddress.ContactName = "Jane Doe";
+        billingAddress.City = "Istanbul";
+        billingAddress.Country = "Turkey";
+        billingAddress.Description = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
+        billingAddress.ZipCode = "34742";
+        paymentRequest.BillingAddress = billingAddress;
+
+        //Address shippingAddress = new Address();
+        //shippingAddress.ContactName = "Jane Doe";
+        //shippingAddress.City = "Istanbul";
+        //shippingAddress.Country = "Turkey";
+        //shippingAddress.Description = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
+        //shippingAddress.ZipCode = "34742";
+        //paymentRequest.ShippingAddress = shippingAddress;
+
+        List<BasketItem> basketItems = new List<BasketItem>();
+        BasketItem firstBasketItem = new BasketItem();
+        firstBasketItem.Id = "Tip";
+        firstBasketItem.Name = "Tip";
+        firstBasketItem.Category1 = "Tip";
+        firstBasketItem.ItemType = BasketItemType.VIRTUAL.ToString();
+        firstBasketItem.Price = price;
+        basketItems.Add(firstBasketItem);
+
+        paymentRequest.BasketItems = basketItems;
+        CheckoutFormInitialize checkoutFormInitialize = CheckoutFormInitialize.Create(paymentRequest, GetIyzipayOptions());
+
+        return checkoutFormInitialize;
+    }
+
+    public async Task<CheckoutForm> PaymentResult(string token)
+    {
+        RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
+        request.Token = token;
+        CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, GetIyzipayOptions());
+
+        return checkoutForm;
+    }
+
+    private Iyzipay.Options GetIyzipayOptions()
+    {
+        Iyzipay.Options options = new Iyzipay.Options();
+        options.ApiKey = "sandbox-vcSUn51fGnZHb25sb7kNsHZcPQBvSpmq";
+        options.SecretKey = "sandbox-voeiJp8AQNr4cTfl2G2RRWUt5vZ8friX";
+        options.BaseUrl = "https://sandbox-api.iyzipay.com";
+
+        return options;
     }
 }

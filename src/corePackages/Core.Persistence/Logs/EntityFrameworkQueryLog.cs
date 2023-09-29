@@ -8,6 +8,8 @@
             using (StreamWriter writer = new StreamWriter(currentPath, true))
             {
                 writer.WriteLine(query);
+                writer.Dispose();
+                writer.Close();
             }
         }
     }
