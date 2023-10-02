@@ -12,4 +12,5 @@ public static class TipsOperationClaims
     public const string Delete = "Tips.Delete";
     public const string PaymentRequest = "Tips.PaymentRequest";
     public const string PaymentResult = "Tips.PaymentResult";
+    public const string SavePayment = "Tips.SavePayment";
 }

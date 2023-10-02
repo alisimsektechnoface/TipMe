@@ -42,7 +42,7 @@ public class PaymentRequestCommand : IRequest<CustomResponseDto<CheckoutFormInit
             Invoice? invoice = await _invoiceRepository.GetAsync(x => x.QrCode == request.QrCode, enableTracking: false, cancellationToken: cancellationToken);
             CheckoutFormInitialize checkoutFormInitialize = await _tipsService.PaymentRequest(request.TipAmount, request.RedirectUrl, invoice);
 
-            if (checkoutFormInitialize.Status.ToLower() == "success")
+            if (checkoutFormInitialize?.Status.ToLower() == Status.SUCCESS.ToString())
             {
                 Tip? tip = await _tipRepository.GetAsync(x => x.QrCode == invoice.QrCode, enableTracking: false);
                 tip.PaymentReference = checkoutFormInitialize.Token;
@@ -57,7 +57,7 @@ public class PaymentRequestCommand : IRequest<CustomResponseDto<CheckoutFormInit
                 //}
             }
 
-            return CustomResponseDto<CheckoutFormInitialize>.Success((int)HttpStatusCode.OK, checkoutFormInitialize, checkoutFormInitialize.Status.ToLower() == "success");
+            return CustomResponseDto<CheckoutFormInitialize>.Success((int)HttpStatusCode.OK, checkoutFormInitialize, checkoutFormInitialize.Status.ToLower() == Status.SUCCESS.ToString());
         }
     }
 }

@@ -4,6 +4,7 @@ using Core.Domain.Entities;
 using Core.Persistence.Paging;
 using Iyzipay.Model;
 using Iyzipay.Request;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
@@ -11,13 +12,15 @@ namespace Application.Services.Tips;
 
 public class TipsManager : ITipsService
 {
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ITipRepository _tipRepository;
     private readonly TipBusinessRules _tipBusinessRules;
 
-    public TipsManager(ITipRepository tipRepository, TipBusinessRules tipBusinessRules)
+    public TipsManager(ITipRepository tipRepository, IHttpContextAccessor httpContextAccessor, TipBusinessRules tipBusinessRules)
     {
         _tipRepository = tipRepository;
         _tipBusinessRules = tipBusinessRules;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<Tip?> GetAsync(
@@ -80,6 +83,9 @@ public class TipsManager : ITipsService
     public async Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, string redirectUrl, Invoice invoice)
     {
         string price = tipAmount.ToString().Replace(",", ".");
+        //string myHostUrl = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+        //string myHostUrl1 = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}";
+
 
         CreateCheckoutFormInitializeRequest paymentRequest = new CreateCheckoutFormInitializeRequest();
         //CreatePaymentRequest paymentRequest = new CreatePaymentRequest();
@@ -90,7 +96,8 @@ public class TipsManager : ITipsService
         paymentRequest.Currency = Currency.TRY.ToString();
         paymentRequest.BasketId = invoice.Id.ToString();
         paymentRequest.PaymentGroup = PaymentGroup.PRODUCT.ToString();
-        paymentRequest.CallbackUrl = redirectUrl + "/" + invoice.QrCode;
+        //paymentRequest.CallbackUrl = myHostUrl + "/api/Tips/PaymentResult/" + invoice.QrCode;
+        paymentRequest.CallbackUrl = redirectUrl + "?qrCode=" + invoice.QrCode;
 
         Buyer buyer = new Buyer();
         buyer.Id = "BY789";
@@ -139,10 +146,21 @@ public class TipsManager : ITipsService
         return checkoutFormInitialize;
     }
 
-    public async Task<CheckoutForm> PaymentResult(string token)
+    public async Task<CheckoutForm> PaymentResultToken(string token)
     {
         RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
         request.Token = token;
+        CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, GetIyzipayOptions());
+
+        return checkoutForm;
+    }
+
+    public async Task<CheckoutForm> PaymentResultQrCode(string qrCode)
+    {
+        Tip? tip = await _tipRepository.GetAsync(x => x.QrCode == qrCode, enableTracking: false);
+        await _tipBusinessRules.TipShouldExistWhenSelected(tip);
+        RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
+        request.Token = tip.PaymentReference;
         CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, GetIyzipayOptions());
 
         return checkoutForm;

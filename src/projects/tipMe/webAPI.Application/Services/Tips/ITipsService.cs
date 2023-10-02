@@ -29,5 +29,6 @@ public interface ITipsService
     Task<Tip> UpdateAsync(Tip tip);
     Task<Tip> DeleteAsync(Tip tip, bool permanent = false);
     Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, string redirectUrl, Invoice invoice);
-    Task<CheckoutForm> PaymentResult(string token);
+    Task<CheckoutForm> PaymentResultToken(string token);
+    Task<CheckoutForm> PaymentResultQrCode(string qrCode);
 }

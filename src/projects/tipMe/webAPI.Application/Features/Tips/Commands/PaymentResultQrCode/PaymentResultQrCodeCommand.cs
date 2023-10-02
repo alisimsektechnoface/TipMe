@@ -10,12 +10,12 @@ using Iyzipay.Model;
 using MediatR;
 using System.Net;
 
-namespace Application.Features.Tips.Commands.PaymentResult;
+namespace Application.Features.Tips.Commands.PaymentResultQrCode;
 
-public class PaymentResultCommand : IRequest<CustomResponseDto<CheckoutForm>>
+public class PaymentResultQrCodeCommand : IRequest<CustomResponseDto<CheckoutForm>>
 {
-    public string Token { get; set; }
-    public class PaymentResultCommandHandler : IRequestHandler<PaymentResultCommand, CustomResponseDto<CheckoutForm>>
+    public string QrCode { get; set; }
+    public class PaymentResultCommandHandler : IRequestHandler<PaymentResultQrCodeCommand, CustomResponseDto<CheckoutForm>>
     {
         private readonly IMapper _mapper;
         private readonly IInvoiceRepository _invoiceRepository;
@@ -32,27 +32,29 @@ public class PaymentResultCommand : IRequest<CustomResponseDto<CheckoutForm>>
             _tipBusinessRules = tipBusinessRules;
         }
 
-        public async Task<CustomResponseDto<CheckoutForm>> Handle(PaymentResultCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResponseDto<CheckoutForm>> Handle(PaymentResultQrCodeCommand request, CancellationToken cancellationToken)
         {
-            CheckoutForm checkoutForm = await _tipsService.PaymentResultToken(request.Token);
+            CheckoutForm checkoutForm = await _tipsService.PaymentResultQrCode(request.QrCode);
 
-            if (checkoutForm?.PaymentStatus == Status.SUCCESS.ToString())
+            if (checkoutForm?.PaymentStatus.ToLower() == Status.SUCCESS.ToString())
             {
-                Tip? tip = await _tipRepository.GetAsync(x => x.PaymentReference == request.Token, enableTracking: false);
+                Invoice? invoice = await _invoiceRepository.GetAsync(x => x.QrCode == request.QrCode, enableTracking: false, cancellationToken: cancellationToken);
+                invoice.IsTipped = true;
+                invoice.TipDate = DateTime.Now;
+                await _invoiceRepository.UpdateAsync(invoice);
+
+                Tip? tip = await _tipRepository.GetAsync(x => x.QrCode == request.QrCode, enableTracking: false);
                 tip.IsTipped = true;
                 tip.PaymentDate = DateTime.Now;
                 await _tipRepository.UpdateAsync(tip);
 
-                Invoice? invoice = await _invoiceRepository.GetAsync(x => x.QrCode == tip.QrCode, enableTracking: false, cancellationToken: cancellationToken);
-                invoice.IsTipped = true;
-                invoice.TipDate = DateTime.Now;
-                await _invoiceRepository.UpdateAsync(invoice);
+
 
             }
             else
                 throw new BusinessException(TipsBusinessMessages.TipNotExists);
 
-            return CustomResponseDto<CheckoutForm>.Success((int)HttpStatusCode.OK, checkoutForm, checkoutForm.PaymentStatus == Status.SUCCESS.ToString());
+            return CustomResponseDto<CheckoutForm>.Success((int)HttpStatusCode.OK, checkoutForm, checkoutForm.PaymentStatus.ToLower() == Status.SUCCESS.ToString());
         }
     }
 }
