@@ -1,4 +1,4 @@
-using Application.Features.Invoices.Constants;
+﻿using Application.Features.Invoices.Constants;
 using Application.Features.Invoices.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
@@ -14,15 +14,15 @@ namespace Application.Features.Invoices.Commands.Create;
 
 public class CreateInvoiceCommand : IRequest<CustomResponseDto<CreatedInvoiceResponse>>
 {
-    public DateTime InvoiceDate { get; set; }
+    //public DateTime InvoiceDate { get; set; }
     public Guid StoreId { get; set; }
     public Guid WaiterId { get; set; }
     public decimal Amount { get; set; }
-    public DateTime? TipDate { get; set; }
-    public bool IsTipped { get; set; }
+    //public DateTime? TipDate { get; set; }
+    //public bool IsTipped { get; set; }
     [JsonIgnore]
     public string? QrCode { get; set; }
-    public string? Currency { get; set; }
+    //public string? Currency { get; set; }
 
     public string[] Roles => new[] { Admin, Write, InvoicesOperationClaims.Create };
 
@@ -43,6 +43,8 @@ public class CreateInvoiceCommand : IRequest<CustomResponseDto<CreatedInvoiceRes
         public async Task<CustomResponseDto<CreatedInvoiceResponse>> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
         {
             Invoice invoice = _mapper.Map<Invoice>(request);
+            invoice.InvoiceDate = DateTime.Now;
+            invoice.Currency = "₺";
             invoice.QrCode = QrCodeHelpers.GenerateQrCode();
             await _invoiceRepository.AddAsync(invoice);
 
