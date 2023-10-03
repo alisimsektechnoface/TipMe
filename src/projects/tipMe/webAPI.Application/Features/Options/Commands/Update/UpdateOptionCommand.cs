@@ -14,8 +14,8 @@ public class UpdateOptionCommand : IRequest<CustomResponseDto<UpdatedOptionRespo
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public string Icon { get; set; }
-    public bool IsHappy { get; set; }
+    public string? Icon { get; set; }
+    public bool? IsHappy { get; set; }
 
     public string[] Roles => new[] { Admin, Write, OptionsOperationClaims.Update };
 
