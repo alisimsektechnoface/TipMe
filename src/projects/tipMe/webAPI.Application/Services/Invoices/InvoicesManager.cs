@@ -6,8 +6,12 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Core.Domain.Entities;
 using Core.Persistence.Paging;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using QRCoder;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq.Expressions;
 
 namespace Application.Services.Invoices;
@@ -17,14 +21,17 @@ public class InvoicesManager : IInvoicesService
     private readonly IMapper _mapper;
     private readonly IInvoiceRepository _invoiceRepository;
     private readonly IOptionRepository _optionRepository;
+    private readonly IWebHostEnvironment _host;
     private readonly InvoiceBusinessRules _invoiceBusinessRules;
 
-    public InvoicesManager(IMapper mapper, IInvoiceRepository invoiceRepository, IOptionRepository optionRepository, InvoiceBusinessRules invoiceBusinessRules)
+    public InvoicesManager(IMapper mapper, IWebHostEnvironment host, IInvoiceRepository invoiceRepository, IOptionRepository optionRepository, InvoiceBusinessRules invoiceBusinessRules)
     {
         _mapper = mapper;
         _invoiceRepository = invoiceRepository;
         _optionRepository = optionRepository;
         _invoiceBusinessRules = invoiceBusinessRules;
+
+        _host = host;
     }
 
     public async Task<Invoice?> GetAsync(
@@ -110,5 +117,29 @@ public class InvoicesManager : IInvoicesService
         }
         response.Options = options;
         return response;
+    }
+
+    public async Task<string> QrCodeGenerate(string input, string fileName)
+    {
+        string result = string.Empty;
+
+        using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+        {
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(input, QRCodeGenerator.ECCLevel.Q))
+            {
+                QRCode qrCode = new QRCode(qrCodeData);
+                Base64QRCode qrCode1 = new Base64QRCode(qrCodeData);
+
+                Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+                Bitmap qrCodeImage1 = qrCode.GetGraphic(20, Color.Black, Color.White, true);
+                string path = Path.Combine(_host.WebRootPath, "Resources", "QrCodes");
+                qrCodeImage1.Save(filename: $@"{path}\{fileName}.png", ImageFormat.Png);
+            }
+        }
+
+
+
+        return result;
     }
 }

@@ -12,4 +12,5 @@ public static class InvoicesOperationClaims
     public const string Delete = "Invoices.Delete";
     public const string GenerateInvoice = "Invoices.GenerateInvoice";
     public const string GetByQrCode = "Invoices.GetByQrCode";
+    public const string QrCodeGenerate = "Invoices.QrCodeGenerate";
 }

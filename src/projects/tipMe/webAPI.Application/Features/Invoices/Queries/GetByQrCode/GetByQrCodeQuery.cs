@@ -40,6 +40,7 @@ public class GetByQrCodeQuery : IRequest<CustomResponseDto<GetByQrCodeResponse>>
 
             if (tip is null)
             {
+                await _invoiceService.QrCodeGenerate(request.QrCode, request.QrCode);
                 tip = await _tipRepository.AddAsync(new() { RequestDate = DateTime.Now, QrCode = response.QrCode, IsTipped = false, IsCommented = false });
             }
             response.TipId = tip?.Id;

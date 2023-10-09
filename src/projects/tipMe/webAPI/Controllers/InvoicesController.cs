@@ -1,5 +1,6 @@
 using Application.Features.Invoices.Commands.Create;
 using Application.Features.Invoices.Queries.GetByQrCode;
+using Application.Features.Invoices.Queries.QrCodeGenerate;
 using Core.Application.ResponseTypes.Concrete;
 using Microsoft.AspNetCore.Mvc;
 using webAPI.Controllers.Base;
@@ -55,6 +56,14 @@ public class InvoicesController : BaseController
     {
         GetByQrCodeQuery getByQrCodeQuery = new GetByQrCodeQuery() { QrCode = QrCode };
         CustomResponseDto<GetByQrCodeResponse> response = await Mediator.Send(getByQrCodeQuery);
+        return Ok(response);
+    }
+
+    [HttpGet("QrCodeGenerate")]
+    public async Task<IActionResult> QrCodeGenerate([FromQuery] string fileName, [FromQuery] string input)
+    {
+        QrCodeGenerateQuery qrCodeGenerateQuery = new() { FileName = fileName, Input = input };
+        CustomResponseDto<QrCodeGenerateResponse> response = await Mediator.Send(qrCodeGenerateQuery);
         return Ok(response);
     }
 }
