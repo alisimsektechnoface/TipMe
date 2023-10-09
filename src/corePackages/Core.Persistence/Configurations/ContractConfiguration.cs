@@ -17,6 +17,6 @@ public class ContractConfiguration : BaseConfiguration<Contract, Guid>
 
         builder.Property(c => c.Description).HasColumnName("Description");
 
-
+        builder.HasIndex(c => c.Url);
     }
 }

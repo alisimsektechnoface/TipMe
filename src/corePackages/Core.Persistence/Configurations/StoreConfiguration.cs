@@ -12,6 +12,6 @@ public class StoreConfiguration : BaseConfiguration<Store, Guid>
 
         base.Configure(builder);
         builder.ToTable(TableNameConstants.STORE);
-        builder.Property(s => s.Name).HasColumnName("Name");
+        builder.Property(s => s.Name).HasColumnName("Name").HasMaxLength(100);
     }
 }

@@ -22,8 +22,8 @@ public class InvoiceConfiguration : BaseConfiguration<Invoice, Guid>
         builder.Property(i => i.Amount).HasColumnName("Amount").HasPrecision(18, 2);
         builder.Property(i => i.TipDate).HasColumnName("TipDate").IsRequired(false);
         builder.Property(i => i.IsTipped).HasColumnName("IsTipped");
-        builder.Property(i => i.QrCode).HasColumnName("QrCode");
-        builder.Property(i => i.Currency).HasColumnName("Currency");
-
+        builder.Property(i => i.QrCode).HasColumnName("QrCode").HasMaxLength(250);
+        builder.Property(i => i.Currency).HasColumnName("Currency").HasMaxLength(5);
+        builder.HasIndex(i => i.QrCode);
     }
 }

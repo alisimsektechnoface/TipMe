@@ -42,9 +42,7 @@ public class GetByQrCodeQuery : IRequest<CustomResponseDto<GetByQrCodeResponse>>
             {
                 tip = await _tipRepository.AddAsync(new() { RequestDate = DateTime.Now, QrCode = response.QrCode, IsTipped = false, IsCommented = false });
             }
-            response.TipId = tip.Id;
-
-            //GetByQrCodeResponse response = _mapper.Map<GetByQrCodeResponse>(invoice);
+            response.TipId = tip?.Id;
 
             return CustomResponseDto<GetByQrCodeResponse>.Success((int)HttpStatusCode.OK, response, true);
         }

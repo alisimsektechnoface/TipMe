@@ -12,9 +12,9 @@ public class OptionConfiguration : BaseConfiguration<Option, Guid>
 
         base.Configure(builder);
         builder.ToTable(TableNameConstants.OPTION);
-        builder.Property(o => o.Name).HasColumnName("Name");
-        builder.Property(o => o.Icon).HasColumnName("Icon");
-        builder.Property(o => o.IsHappy).HasColumnName("IsHappy");
+        builder.Property(o => o.Name).HasColumnName("Name").HasMaxLength(100);
+        builder.Property(o => o.Icon).HasColumnName("Icon").HasMaxLength(250);
+        builder.Property(o => o.IsHappy).HasColumnName("IsHappy").HasDefaultValue(false);
 
     }
 }

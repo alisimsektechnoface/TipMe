@@ -86,9 +86,11 @@ public class InvoicesManager : IInvoicesService
 
     public async Task<GetByQrCodeResponse> GetByQrCode(string qrCode, CancellationToken cancellationToken)
     {
-        Invoice? invoice = await _invoiceRepository.GetAsync(predicate: i => i.QrCode == qrCode && !i.IsTipped,
-                include: i => i.Include(x => x.Store).Include(x => x.Waiter),
-                cancellationToken: cancellationToken);
+        Invoice? invoice = await _invoiceRepository.GetAsync(
+            predicate: i => i.QrCode == qrCode && !i.IsTipped,
+            include: i => i.Include(x => x.Store).Include(x => x.Waiter),
+            cancellationToken: cancellationToken);
+
         await _invoiceBusinessRules.InvoiceShouldExistWhenSelected(invoice);
 
         GetByQrCodeResponse response = _mapper.Map<GetByQrCodeResponse>(invoice);

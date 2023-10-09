@@ -13,15 +13,16 @@ public class TipConfiguration : BaseConfiguration<Tip, Guid>
         base.Configure(builder);
         builder.ToTable(TableNameConstants.TIP);
         builder.Property(t => t.RequestDate).HasColumnName("RequestDate");
-        builder.Property(t => t.QrCode).HasColumnName("QrCode");
+        builder.Property(t => t.QrCode).HasColumnName("QrCode").HasMaxLength(250);
         builder.Property(t => t.TipAmount).HasColumnName("TipAmount").IsRequired(false).HasPrecision(18, 2);
         builder.Property(t => t.IsTipped).HasColumnName("IsTipped").IsRequired(false);
         builder.Property(t => t.PaymentDate).HasColumnName("PaymentDate").IsRequired(false);
-        builder.Property(t => t.PaymentReference).HasColumnName("PaymentReference").IsRequired(false);
+        builder.Property(t => t.PaymentReference).HasColumnName("PaymentReference").IsRequired(false).HasMaxLength(500);
         builder.Property(t => t.IsCommented).HasColumnName("IsCommented").IsRequired(false);
         builder.Property(t => t.Comment).HasColumnName("Comment").IsRequired(false);
         builder.Property(t => t.CommentDate).HasColumnName("CommentDate").IsRequired(false);
         builder.Property(t => t.Point).HasColumnName("Point").IsRequired(false);
+        builder.HasIndex(i => i.QrCode);
 
     }
 }
