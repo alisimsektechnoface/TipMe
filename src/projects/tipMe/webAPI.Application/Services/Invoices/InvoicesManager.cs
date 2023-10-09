@@ -135,6 +135,7 @@ public class InvoicesManager : IInvoicesService
                 Bitmap qrCodeImage1 = qrCode.GetGraphic(20, Color.Black, Color.White, true);
                 string path = Path.Combine(_host.WebRootPath, "Resources", "QrCodes");
                 qrCodeImage1.Save(filename: $@"{path}\{fileName}.png", ImageFormat.Png);
+                result = $@"{path}\{fileName}.png";
             }
         }
 
