@@ -7,6 +7,7 @@ namespace Core.Domain.Entities
         public DateTime RequestDate { get; set; }
         public string QrCode { get; set; }
         public decimal? TipAmount { get; set; }
+        public decimal? TaxAmount { get; set; }
         public bool? IsTipped { get; set; }
         public DateTime? PaymentDate { get; set; }
         public string? PaymentReference { get; set; }
@@ -19,11 +20,12 @@ namespace Core.Domain.Entities
         {
         }
 
-        public Tip(Guid id, DateTime requestDate, string? qrCode, decimal? tipAmount, bool? isTipped, DateTime? paymentDate, string? paymentReference, bool? isCommented, string? comment, DateTime? commentDate, int? point) : this()
+        public Tip(Guid id, DateTime requestDate, string? qrCode, decimal? tipAmount, decimal? taxAmount, bool? isTipped, DateTime? paymentDate, string? paymentReference, bool? isCommented, string? comment, DateTime? commentDate, int? point) : this()
         {
             Id = id;
             RequestDate = requestDate;
             QrCode = qrCode;
+            TaxAmount = taxAmount;
             TipAmount = tipAmount;
             IsTipped = isTipped;
             PaymentDate = paymentDate;

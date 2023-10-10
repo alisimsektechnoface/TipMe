@@ -15,6 +15,7 @@ public class TipConfiguration : BaseConfiguration<Tip, Guid>
         builder.Property(t => t.RequestDate).HasColumnName("RequestDate");
         builder.Property(t => t.QrCode).HasColumnName("QrCode").HasMaxLength(250);
         builder.Property(t => t.TipAmount).HasColumnName("TipAmount").IsRequired(false).HasPrecision(18, 2);
+        builder.Property(t => t.TaxAmount).HasColumnName("TaxAmount").IsRequired(false).HasPrecision(18, 2).HasDefaultValue(Convert.ToDecimal(0));
         builder.Property(t => t.IsTipped).HasColumnName("IsTipped").IsRequired(false);
         builder.Property(t => t.PaymentDate).HasColumnName("PaymentDate").IsRequired(false);
         builder.Property(t => t.PaymentReference).HasColumnName("PaymentReference").IsRequired(false).HasMaxLength(500);

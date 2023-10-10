@@ -14,6 +14,7 @@ public class UpdateTipCommand : IRequest<CustomResponseDto<UpdatedTipResponse>>
 {
     public string QrCode { get; set; }
     public decimal? TipAmount { get; set; }
+    public decimal? TaxAmount { get; set; }
     public string? Comment { get; set; }
     public int? Point { get; set; }
     public List<Guid> Options { get; set; }

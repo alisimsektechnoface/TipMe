@@ -8,6 +8,7 @@ public class GetListTipListItemDto : IDto
     public DateTime RequestDate { get; set; }
     public string QrCode { get; set; }
     public decimal? TipAmount { get; set; }
+    public decimal? TaxAmount { get; set; }
     public bool? IsTipped { get; set; }
     public DateTime? PaymentDate { get; set; }
     public string? PaymentReference { get; set; }
