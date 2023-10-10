@@ -2,9 +2,12 @@ using Application.Features.Invoices.Queries.GetByQrCode;
 using Application.Features.Invoices.Rules;
 using Application.Features.Options.Queries.GetById;
 using Application.Features.Options.Queries.GetOptionsWithGroup;
+using Application.Features.SystemParameters.Constants;
 using Application.Services.Repositories;
+using Application.Services.SystemParameters;
 using AutoMapper;
 using Core.Domain.Entities;
+using Core.Helpers.Helpers;
 using Core.Persistence.Paging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +15,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using QRCoder;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.Linq.Expressions;
 
 namespace Application.Services.Invoices;
@@ -22,13 +26,15 @@ public class InvoicesManager : IInvoicesService
     private readonly IInvoiceRepository _invoiceRepository;
     private readonly IOptionRepository _optionRepository;
     private readonly IWebHostEnvironment _host;
+    private readonly ISystemParametersService _systemParametersService;
     private readonly InvoiceBusinessRules _invoiceBusinessRules;
 
-    public InvoicesManager(IMapper mapper, IWebHostEnvironment host, IInvoiceRepository invoiceRepository, IOptionRepository optionRepository, InvoiceBusinessRules invoiceBusinessRules)
+    public InvoicesManager(IMapper mapper, IWebHostEnvironment host, ISystemParametersService systemParametersService, IInvoiceRepository invoiceRepository, IOptionRepository optionRepository, InvoiceBusinessRules invoiceBusinessRules)
     {
         _mapper = mapper;
         _invoiceRepository = invoiceRepository;
         _optionRepository = optionRepository;
+        _systemParametersService = systemParametersService;
         _invoiceBusinessRules = invoiceBusinessRules;
 
         _host = host;
@@ -130,8 +136,6 @@ public class InvoicesManager : IInvoicesService
                 QRCode qrCode = new QRCode(qrCodeData);
                 Base64QRCode qrCode1 = new Base64QRCode(qrCodeData);
 
-                Bitmap qrCodeImage = qrCode.GetGraphic(20);
-
                 Bitmap qrCodeImage1 = qrCode.GetGraphic(20, Color.Black, Color.White, true);
                 string path = Path.Combine(_host.WebRootPath, "Resources", "QrCodes");
                 qrCodeImage1.Save(filename: $@"{path}\{fileName}.png", ImageFormat.Png);
@@ -139,8 +143,86 @@ public class InvoicesManager : IInvoicesService
             }
         }
 
-
-
         return result;
+    }
+
+    public Bitmap GetBitmapQrCodeGenerate(string input)
+    {
+        Bitmap qrCodeImage;
+        using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+        {
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(input, QRCodeGenerator.ECCLevel.Q))
+            {
+                QRCode qrCode = new QRCode(qrCodeData);
+                Base64QRCode qrCodeBase64 = new Base64QRCode(qrCodeData);
+
+                qrCodeImage = qrCode.GetGraphic(20, Color.Black, Color.White, true);
+            }
+        }
+        return qrCodeImage;
+    }
+    public Base64QRCode GetBase64QrCodeGenerate(string input)
+    {
+        Base64QRCode qrCodeBase64;
+        using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+        {
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(input, QRCodeGenerator.ECCLevel.Q))
+            {
+                QRCode qrCode = new QRCode(qrCodeData);
+                qrCodeBase64 = new Base64QRCode(qrCodeData);
+            }
+        }
+        return qrCodeBase64;
+    }
+    public async Task<string> AdditionGenerate(string qrCode)
+    {
+        string filePath = string.Empty;
+
+        Invoice? invoice = await this._invoiceRepository.GetAsync(x => x.QrCode == qrCode,
+            include: i => i.Include(x => x.Tip).Include(x => x.Store).Include(x => x.Waiter));
+
+        await _invoiceBusinessRules.InvoiceShouldExistWhenSelected(invoice);
+
+        string invoiceTitle = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_InvoiceTitle);
+        string invoiceTemplate = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_InvoiceTemplate);
+
+        if (invoiceTemplate is not null)
+        {
+            var date = invoice.TipDate ?? invoice.InvoiceDate;
+            string qrImg = await GetImgSrc(qrCode);
+            invoiceTemplate = invoiceTemplate
+                .Replace("{InvoiceTitle}", invoiceTitle)
+                .Replace("{StoreName}", invoice.Store.Name)
+                .Replace("{TipAmount}", invoice.Amount.ToString())
+                .Replace("{TaxAmount}", invoice.Amount.ToString())
+                .Replace("{Total}", invoice.Amount.ToString())
+                .Replace("{TipDate}", date.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture))
+                .Replace("{QrCodeImg}", qrImg);
+            ;
+
+            filePath = Path.Combine("Resources", "Additions", qrCode + ".pdf");
+            string fullPath = Path.Combine(_host.WebRootPath, filePath);
+
+            HtmlToPdfHelper.ChromiumHtmlToPdf(fullPath, invoiceTemplate, paperFormat: ChromiumHtmlToPdfLib.Enums.PaperFormat.A6);
+        }
+
+        return filePath;
+    }
+
+    public async Task<string> GetImgSrc(string qrCode)
+    {
+        string imageurl = string.Empty;
+        string webUrl = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_WebUrl);
+        string input = webUrl + "/?qrcode=" + qrCode;
+        var qr = GetBitmapQrCodeGenerate(input);
+
+        using (var stream = new MemoryStream())
+        {
+            qr.Save(stream, ImageFormat.Png);
+            string base64 = Convert.ToBase64String(stream.ToArray());
+            imageurl = "data:image/png;base64, " + base64 + "";
+        }
+
+        return imageurl;
     }
 }

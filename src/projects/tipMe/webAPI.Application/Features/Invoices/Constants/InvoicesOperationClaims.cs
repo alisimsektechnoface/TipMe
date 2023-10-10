@@ -13,4 +13,5 @@ public static class InvoicesOperationClaims
     public const string GenerateInvoice = "Invoices.GenerateInvoice";
     public const string GetByQrCode = "Invoices.GetByQrCode";
     public const string QrCodeGenerate = "Invoices.QrCodeGenerate";
+    public const string GetAdditionByQrCode = "Invoices.GetAdditionByQrCode";
 }

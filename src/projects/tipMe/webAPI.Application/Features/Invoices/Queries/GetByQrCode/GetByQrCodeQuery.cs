@@ -3,7 +3,6 @@ using Application.Services.Invoices;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using Core.Domain.Entities;
 using MediatR;
 using System.Net;
 using static Application.Features.Invoices.Constants.InvoicesOperationClaims;
@@ -36,14 +35,14 @@ public class GetByQrCodeQuery : IRequest<CustomResponseDto<GetByQrCodeResponse>>
         {
             GetByQrCodeResponse response = await _invoiceService.GetByQrCode(request.QrCode, cancellationToken);
 
-            Tip? tip = await _tipRepository.GetAsync(predicate: x => x.QrCode == response.QrCode, cancellationToken: cancellationToken);
+            //Tip? tip = await _tipRepository.GetAsync(predicate: x => x.QrCode == response.QrCode, cancellationToken: cancellationToken);
 
-            if (tip is null)
-            {
-                await _invoiceService.QrCodeGenerate(request.QrCode, request.QrCode);
-                tip = await _tipRepository.AddAsync(new() { RequestDate = DateTime.Now, QrCode = response.QrCode, IsTipped = false, IsCommented = false });
-            }
-            response.TipId = tip?.Id;
+            //if (tip is null)
+            //{
+            //    //await _invoiceService.QrCodeGenerate(request.QrCode, request.QrCode);
+            //    tip = await _tipRepository.AddAsync(new() { RequestDate = DateTime.Now, QrCode = response.QrCode, IsTipped = false, IsCommented = false });
+            //}
+            //response.TipId = tip?.Id;
 
             return CustomResponseDto<GetByQrCodeResponse>.Success((int)HttpStatusCode.OK, response, true);
         }

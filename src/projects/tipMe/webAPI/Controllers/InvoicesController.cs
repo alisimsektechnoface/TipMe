@@ -1,4 +1,5 @@
 using Application.Features.Invoices.Commands.Create;
+using Application.Features.Invoices.Queries.GetAdditionByQrCode;
 using Application.Features.Invoices.Queries.GetByQrCode;
 using Application.Features.Invoices.Queries.QrCodeGenerate;
 using Core.Application.ResponseTypes.Concrete;
@@ -64,6 +65,14 @@ public class InvoicesController : BaseController
     {
         QrCodeGenerateQuery qrCodeGenerateQuery = new() { FileName = fileName, Input = input };
         CustomResponseDto<QrCodeGenerateResponse> response = await Mediator.Send(qrCodeGenerateQuery);
+        return Ok(response);
+    }
+
+    [HttpGet("GetAdditionByQrCode")]
+    public async Task<IActionResult> GetAdditionByQrCode([FromQuery] string QrCode)
+    {
+        GetAdditionByQrCodeQuery getAdditionByQrCodeQuery = new GetAdditionByQrCodeQuery() { QrCode = QrCode };
+        CustomResponseDto<GetAdditionByQrCodeResponse> response = await Mediator.Send(getAdditionByQrCodeQuery);
         return Ok(response);
     }
 }

@@ -30,4 +30,5 @@ public interface IInvoicesService
     Task<Invoice> DeleteAsync(Invoice invoice, bool permanent = false);
     Task<GetByQrCodeResponse> GetByQrCode(string qrCode, CancellationToken cancellationToken);
     Task<string> QrCodeGenerate(string input, string fileName);
+    Task<string> AdditionGenerate(string qrCode);
 }
