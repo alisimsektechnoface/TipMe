@@ -36,7 +36,7 @@ public class PaymentResultQrCodeCommand : IRequest<CustomResponseDto<CheckoutFor
         {
             CheckoutForm checkoutForm = await _tipsService.PaymentResultQrCode(request.QrCode);
 
-            if (checkoutForm?.PaymentStatus.ToLower() == Status.SUCCESS.ToString())
+            if (checkoutForm?.PaymentStatus.ToLower() == Status.SUCCESS.ToString() && request.QrCode != "A3E96248-C0DE-4CE7-889E-9246E868CB90-0574A69D-3C65-4409-8166-3F7CE90153EA")
             {
                 Invoice? invoice = await _invoiceRepository.GetAsync(x => x.QrCode == request.QrCode, enableTracking: false, cancellationToken: cancellationToken);
                 invoice.IsTipped = true;
@@ -47,9 +47,6 @@ public class PaymentResultQrCodeCommand : IRequest<CustomResponseDto<CheckoutFor
                 tip.IsTipped = true;
                 tip.PaymentDate = DateTime.Now;
                 await _tipRepository.UpdateAsync(tip);
-
-
-
             }
             else
                 throw new BusinessException(TipsBusinessMessages.TipNotExists);
