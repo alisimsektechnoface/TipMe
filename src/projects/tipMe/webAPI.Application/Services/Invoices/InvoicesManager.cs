@@ -1,4 +1,4 @@
-using Application.Features.Invoices.Queries.GetByQrCode;
+﻿using Application.Features.Invoices.Queries.GetByQrCode;
 using Application.Features.Invoices.Rules;
 using Application.Features.Options.Queries.GetById;
 using Application.Features.Options.Queries.GetOptionsWithGroup;
@@ -193,17 +193,44 @@ public class InvoicesManager : IInvoicesService
             invoiceTemplate = invoiceTemplate
                 .Replace("{InvoiceTitle}", invoiceTitle)
                 .Replace("{StoreName}", invoice.Store.Name)
-                .Replace("{TipAmount}", invoice.Tip.TipAmount.ToString() + invoice.Currency)
-                .Replace("{TaxAmount}", 0 + invoice.Currency)
-                .Replace("{Total}", invoice.Tip.TipAmount.ToString() + invoice.Currency)
+                .Replace("{TipAmount}", invoice.Tip.TipAmount.ToString() + " " + invoice.Currency)
+                .Replace("{TaxAmount}", 0 + " " + invoice.Currency)
+                .Replace("{Total}", invoice.Tip.TipAmount.ToString() + " " + invoice.Currency)
                 .Replace("{TipDate}", date.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture))
                 .Replace("{QrCodeImg}", qrImg);
             ;
+            var itemHtml = string.Empty;
+
+            itemHtml += "   <tr>" +
+                     "		    <td>" + "1" + "</td>" +
+                     "		    <td>" + "Kaşarlı Tost" + "</td>" +
+                     "		    <td>" + "1200 ₺" + "</td>" +
+                     "	    </tr>";
+
+            itemHtml += "   <tr>" +
+                     "		    <td>" + "1" + "</td>" +
+                     "		    <td>" + "Duble Çay" + "</td>" +
+                     "		    <td>" + "500 ₺" + "</td>" +
+                     "	    </tr>";
+            itemHtml += "   <tr >" +
+                     "		    <td>" + "" + "</td>" +
+                     "		    <td style='text-align:right;'><b>" + "Toplam : " + "</b></td>" +
+                     "		    <td><b>" + "1700 ₺" + "</b></td>" +
+                     "	    </tr>";
+            var html = "<table style='width:100%;margin-bottom:15px;' border='0'>" +
+                    "<thead><tr>" +
+                    "<th scope='col'>" + "Adet" + "</th>" +
+                    "<th scope='col'>" + "Ürün" + "</th>" +
+                    "<th scope='col'>" + "Fiyat" + " </th>" +
+                    "</tr></thead>" +
+                    "<tbody>" + itemHtml + "  </tbody>" +
+                    "</table>";
+            invoiceTemplate = invoiceTemplate.Replace("{Items}", html);
 
             filePath = Path.Combine("Resources", "Additions", qrCode + ".pdf");
             string fullPath = Path.Combine(_host.WebRootPath, filePath);
 
-            HtmlToPdfHelper.ChromiumHtmlToPdf(fullPath, invoiceTemplate, paperFormat: ChromiumHtmlToPdfLib.Enums.PaperFormat.A6);
+            HtmlToPdfHelper.ChromiumHtmlToPdf(fullPath, invoiceTemplate, paperFormat: ChromiumHtmlToPdfLib.Enums.PaperFormat.A5);
         }
 
         return filePath;
