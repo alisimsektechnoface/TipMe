@@ -14,6 +14,7 @@ public class PaymentRequestCommand : IRequest<CustomResponseDto<CheckoutFormInit
 {
     public string QrCode { get; set; }
     public decimal TipAmount { get; set; }
+    public decimal TaxAmount { get; set; }
     //public string Comment { get; set; }
     //public int Point { get; set; }
     //public List<Guid> Options { get; set; }
@@ -40,7 +41,7 @@ public class PaymentRequestCommand : IRequest<CustomResponseDto<CheckoutFormInit
         public async Task<CustomResponseDto<CheckoutFormInitialize>> Handle(PaymentRequestCommand request, CancellationToken cancellationToken)
         {
             Invoice? invoice = await _invoiceRepository.GetAsync(x => x.QrCode == request.QrCode, enableTracking: false, cancellationToken: cancellationToken);
-            CheckoutFormInitialize checkoutFormInitialize = await _tipsService.PaymentRequest(request.TipAmount, request.RedirectUrl, invoice);
+            CheckoutFormInitialize checkoutFormInitialize = await _tipsService.PaymentRequest(request.TipAmount + request.TaxAmount, request.RedirectUrl, invoice);
 
             if (checkoutFormInitialize?.Status.ToLower() == Status.SUCCESS.ToString())
             {
