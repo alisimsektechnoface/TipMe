@@ -194,7 +194,7 @@ public class InvoicesManager : IInvoicesService
                 .Replace("{InvoiceTitle}", invoiceTitle)
                 .Replace("{StoreName}", invoice.Store.Name)
                 .Replace("{TipAmount}", invoice.Tip.TipAmount.ToString() + invoice.Currency)
-                .Replace("{TaxAmount}", invoice.Amount.ToString() + invoice.Currency)
+                .Replace("{TaxAmount}", 0 + invoice.Currency)
                 .Replace("{Total}", invoice.Tip.TipAmount.ToString() + invoice.Currency)
                 .Replace("{TipDate}", date.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture))
                 .Replace("{QrCodeImg}", qrImg);
