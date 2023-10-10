@@ -117,7 +117,7 @@ namespace Core.Application.Pipelines.DbLogging
             BusinessException businessException => throw new BusinessException(businessException.Message),
             AuthorizationException authorizationException => throw new AuthorizationException(authorizationException.Message),
             NotFoundException notFoundException => throw new NotFoundException(notFoundException.Message),
-            _ => throw new Exception(exception.Message)
+            _ => throw new Exception(exception.Message + "---" + exception.InnerException.Message.ToString())
         };
     }
 }
