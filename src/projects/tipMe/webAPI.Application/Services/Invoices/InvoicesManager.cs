@@ -193,10 +193,10 @@ public class InvoicesManager : IInvoicesService
             invoiceTemplate = invoiceTemplate
                 .Replace("{InvoiceTitle}", invoiceTitle)
                 .Replace("{StoreName}", invoice.Store.Name)
-                .Replace("{TipAmount}", invoice.Tip.TipAmount.ToString() + " " + invoice.Currency)
-                .Replace("{TaxAmount}", invoice.Tip.TaxAmount.ToString() + " " + invoice.Currency)
-                .Replace("{Total}", (invoice.Tip.TipAmount + invoice.Tip.TaxAmount).ToString() + " " + invoice.Currency)
-                .Replace("{TipDate}", date.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture))
+                .Replace("{TipAmount}", (invoice.Tip.TipAmount ?? 0).ToString() + " " + invoice.Currency)
+                .Replace("{TaxAmount}", (invoice.Tip.TaxAmount ?? 0).ToString() + " " + invoice.Currency)
+                .Replace("{Total}", (invoice.Tip.TipAmount + invoice.Tip.TaxAmount ?? 0).ToString() + " " + invoice.Currency)
+                .Replace("{TipDate}", date.ToString("dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture))
                 .Replace("{QrCodeImg}", qrImg);
             ;
             var itemHtml = string.Empty;
