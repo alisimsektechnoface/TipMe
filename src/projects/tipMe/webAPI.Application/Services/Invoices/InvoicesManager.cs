@@ -229,8 +229,8 @@ public class InvoicesManager : IInvoicesService
                      "	    </tr>";
             var html = "<table style='width:100%;margin-bottom:15px;' border='0'>" +
                     "<thead><tr>" +
-                    "<th scope='col'>" + "Ürün" + "</th>" +
                     "<th scope='col'>" + "Adet" + "</th>" +
+                    "<th scope='col'>" + "Ürün" + "</th>" +
                     "<th scope='col'>" + "Fiyat" + " </th>" +
                     "</tr></thead>" +
                     "<tbody>" + itemHtml + "  </tbody>" +
