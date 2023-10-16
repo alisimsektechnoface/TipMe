@@ -193,9 +193,9 @@ public class InvoicesManager : IInvoicesService
             invoiceTemplate = invoiceTemplate
                 .Replace("{InvoiceTitle}", invoiceTitle)
                 .Replace("{StoreName}", invoice.Store.Name)
-                .Replace("{TipAmount}", (invoice.Tip.TipAmount ?? 0).ToString() + " " + invoice.Currency)
-                .Replace("{TaxAmount}", (invoice.Tip.TaxAmount ?? 0).ToString() + " " + invoice.Currency)
-                .Replace("{Total}", (invoice.Tip.TipAmount + invoice.Tip.TaxAmount ?? 0).ToString() + " " + invoice.Currency)
+                .Replace("{TipAmount}", invoice.Currency + (invoice.Tip.TipAmount ?? 0).ToString())
+                .Replace("{TaxAmount}", invoice.Currency + (invoice.Tip.TaxAmount ?? 0).ToString())
+                .Replace("{Total}", invoice.Currency + (invoice.Tip.TipAmount + (invoice.Tip.TaxAmount ?? 0)).ToString())
                 .Replace("{TipDate}", date.ToString("dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture))
                 .Replace("{QrCodeImg}", qrImg);
             ;
@@ -203,24 +203,34 @@ public class InvoicesManager : IInvoicesService
 
             itemHtml += "   <tr>" +
                      "		    <td>" + "1" + "</td>" +
-                     "		    <td>" + "Kaşarlı Tost" + "</td>" +
-                     "		    <td>" + "1200 ₺" + "</td>" +
+                     "		    <td>" + "Mercimek Çorbası" + "</td>" +
+                     "		    <td>" + "₺80.00" + "</td>" +
                      "	    </tr>";
 
             itemHtml += "   <tr>" +
-                     "		    <td>" + "1" + "</td>" +
-                     "		    <td>" + "Duble Çay" + "</td>" +
-                     "		    <td>" + "500 ₺" + "</td>" +
+                     "		    <td>" + "3" + "</td>" +
+                     "		    <td>" + "Kebap" + "</td>" +
+                     "		    <td>" + "₺600.00" + "</td>" +
+                     "	    </tr>";
+            itemHtml += "   <tr>" +
+                     "		    <td>" + "2" + "</td>" +
+                     "		    <td>" + "Künefe" + "</td>" +
+                     "		    <td>" + "₺180.00" + "</td>" +
+                     "	    </tr>";
+            itemHtml += "   <tr>" +
+                     "		    <td>" + "14" + "</td>" +
+                     "		    <td>" + "Çay" + "</td>" +
+                     "		    <td>" + "₺140.00" + "</td>" +
                      "	    </tr>";
             itemHtml += "   <tr >" +
                      "		    <td>" + "" + "</td>" +
                      "		    <td style='text-align:right;'><b>" + "Toplam : " + "</b></td>" +
-                     "		    <td><b>" + "1700 ₺" + "</b></td>" +
+                     "		    <td><b>" + "₺1000.00" + "</b></td>" +
                      "	    </tr>";
             var html = "<table style='width:100%;margin-bottom:15px;' border='0'>" +
                     "<thead><tr>" +
-                    "<th scope='col'>" + "Adet" + "</th>" +
                     "<th scope='col'>" + "Ürün" + "</th>" +
+                    "<th scope='col'>" + "Adet" + "</th>" +
                     "<th scope='col'>" + "Fiyat" + " </th>" +
                     "</tr></thead>" +
                     "<tbody>" + itemHtml + "  </tbody>" +
