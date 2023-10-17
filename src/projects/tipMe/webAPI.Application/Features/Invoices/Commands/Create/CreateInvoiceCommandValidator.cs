@@ -6,7 +6,6 @@ public class CreateInvoiceCommandValidator : AbstractValidator<CreateInvoiceComm
 {
     public CreateInvoiceCommandValidator()
     {
-        //RuleFor(c => c.StoreId).NotEmpty();
         RuleFor(c => c.WaiterId).NotEmpty();
         RuleFor(c => c.Amount).NotEmpty();
     }

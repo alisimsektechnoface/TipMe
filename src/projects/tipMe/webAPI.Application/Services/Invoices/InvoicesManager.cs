@@ -101,7 +101,7 @@ public class InvoicesManager : IInvoicesService
     {
         Invoice? invoice = await _invoiceRepository.GetAsync(
             predicate: i => i.QrCode == qrCode && !i.IsTipped,
-            include: i => i.Include(x => x.Store).Include(x => x.Waiter),
+            include: i => i.Include(x => x.Waiter).ThenInclude(x => x.Store),
             cancellationToken: cancellationToken);
 
         await _invoiceBusinessRules.InvoiceShouldExistWhenSelected(invoice);
@@ -179,7 +179,7 @@ public class InvoicesManager : IInvoicesService
         string filePath = string.Empty;
 
         Invoice? invoice = await this._invoiceRepository.GetAsync(x => x.QrCode == qrCode,
-            include: i => i.Include(x => x.Tip).Include(x => x.Store).Include(x => x.Waiter));
+            include: i => i.Include(x => x.Tip).Include(x => x.Waiter).ThenInclude(x => x.Store));
 
         await _invoiceBusinessRules.InvoiceShouldExistWhenSelected(invoice);
 
@@ -192,10 +192,10 @@ public class InvoicesManager : IInvoicesService
             string qrImg = await GetImgSrc(qrCode);
             invoiceTemplate = invoiceTemplate
                 .Replace("{InvoiceTitle}", invoiceTitle)
-                .Replace("{StoreName}", invoice.Store.Name)
-                .Replace("{TipAmount}", invoice.Currency + (invoice.Tip.TipAmount ?? 0).ToString())
-                .Replace("{TaxAmount}", invoice.Currency + (invoice.Tip.TaxAmount ?? 0).ToString())
-                .Replace("{Total}", invoice.Currency + (invoice.Tip.TipAmount + (invoice.Tip.TaxAmount ?? 0)).ToString())
+                .Replace("{StoreName}", invoice.Waiter?.Store?.Name)
+                .Replace("{TipAmount}", invoice.Currency + (invoice.Tip?.TipAmount ?? 0).ToString())
+                .Replace("{TaxAmount}", invoice.Currency + (invoice.Tip?.TaxAmount ?? 0).ToString())
+                .Replace("{Total}", invoice.Currency + (invoice.Tip?.TipAmount + (invoice.Tip?.TaxAmount ?? 0)).ToString())
                 .Replace("{TipDate}", date.ToString("dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture))
                 .Replace("{QrCodeImg}", qrImg);
             ;

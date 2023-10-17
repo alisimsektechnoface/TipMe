@@ -57,7 +57,6 @@ public class CreateInvoiceCommand : IRequest<CustomResponseDto<CreatedInvoiceRes
             }
 
             Invoice invoice = _mapper.Map<Invoice>(request);
-            invoice.StoreId = waiter.StoreId;
             invoice.InvoiceDate = DateTime.Now;
             invoice.Currency = "₺";
             invoice.QrCode = qrCode;
