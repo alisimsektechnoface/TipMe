@@ -6,6 +6,7 @@ namespace Application.Features.Users.Commands.Create;
 public class CreatedUserResponse : IResponse
 {
     public Guid Id { get; set; }
+    public Guid StoreId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
@@ -18,9 +19,10 @@ public class CreatedUserResponse : IResponse
         Email = string.Empty;
     }
 
-    public CreatedUserResponse(Guid id, string firstName, string lastName, string email, RecordStatu status)
+    public CreatedUserResponse(Guid id, Guid storeId, string firstName, string lastName, string email, RecordStatu status)
     {
         Id = id;
+        StoreId = storeId;
         FirstName = firstName;
         LastName = lastName;
         Email = email;

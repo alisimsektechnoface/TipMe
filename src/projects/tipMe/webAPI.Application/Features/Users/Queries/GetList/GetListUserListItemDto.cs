@@ -6,6 +6,7 @@ namespace Application.Features.Users.Queries.GetList;
 public class GetListUserListItemDto : IDto
 {
     public Guid Id { get; set; }
+    public Guid StoreId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
@@ -18,12 +19,13 @@ public class GetListUserListItemDto : IDto
         Email = string.Empty;
     }
 
-    public GetListUserListItemDto(Guid id, string firstName, string lastName, string email, RecordStatu status)
+    public GetListUserListItemDto(Guid id, string firstName, string lastName, string email, RecordStatu status, Guid storeId)
     {
         Id = id;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
         Status = status;
+        StoreId = storeId;
     }
 }

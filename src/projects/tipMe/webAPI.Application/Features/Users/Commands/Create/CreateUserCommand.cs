@@ -13,6 +13,7 @@ namespace Application.Features.Users.Commands.Create;
 
 public class CreateUserCommand : IRequest<CustomResponseDto<CreatedUserResponse>>, ISecuredRequest
 {
+    public Guid StoreId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
@@ -26,8 +27,9 @@ public class CreateUserCommand : IRequest<CustomResponseDto<CreatedUserResponse>
         Password = string.Empty;
     }
 
-    public CreateUserCommand(string firstName, string lastName, string email, string password)
+    public CreateUserCommand(Guid storeId, string firstName, string lastName, string email, string password)
     {
+        StoreId = storeId;
         FirstName = firstName;
         LastName = lastName;
         Email = email;

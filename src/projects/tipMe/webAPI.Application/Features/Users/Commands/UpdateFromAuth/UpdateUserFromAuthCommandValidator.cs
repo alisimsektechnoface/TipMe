@@ -6,6 +6,7 @@ public class UpdateUserFromAuthCommandValidator : AbstractValidator<UpdateUserFr
 {
     public UpdateUserFromAuthCommandValidator()
     {
+        RuleFor(c => c.StoreId).NotEmpty();
         RuleFor(c => c.FirstName).NotEmpty().MinimumLength(2);
         RuleFor(c => c.LastName).NotEmpty().MinimumLength(2);
         RuleFor(c => c.Password).NotEmpty().MinimumLength(4);

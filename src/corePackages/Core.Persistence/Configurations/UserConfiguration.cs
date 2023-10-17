@@ -14,6 +14,8 @@ namespace Core.Persistence.Configurations
         public override void Configure(EntityTypeBuilder<User> builder)
         {
             base.Configure(builder);
+            builder.Property(x => x.StoreId).HasColumnName("StoreId").IsRequired(true).HasDefaultValue(new Guid("85a21399-e3c0-4ce1-8a9d-08dbcf14a70e"));
+            builder.HasOne(w => w.Store).WithMany().HasForeignKey(w => w.StoreId).OnDelete(DeleteBehavior.Restrict);
             builder.Property(x => x.FirstName).HasColumnName("FirstName").IsRequired(true).HasMaxLength(LengthContraints.NameMaxLength);
             builder.Property(x => x.LastName).HasColumnName("LastName").IsRequired(true).HasMaxLength(LengthContraints.NameMaxLength);
             builder.Property(x => x.Email).HasColumnName("Email").IsRequired(true).HasMaxLength(LengthContraints.EmailMaxLength);

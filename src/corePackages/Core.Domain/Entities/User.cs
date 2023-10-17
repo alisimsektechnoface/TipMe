@@ -5,6 +5,7 @@ namespace Core.Domain.Entities
 {
     public class User : Entity<Guid>
     {
+        public Guid StoreId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -12,6 +13,7 @@ namespace Core.Domain.Entities
         public byte[] PasswordHash { get; set; }
         public AuthenticatorType AuthenticatorType { get; set; }
         public CultureType CultureType { get; set; }
+        public Store Store { get; set; } = null!;
         public virtual ICollection<UserOperationClaim> UserOperationClaims { get; set; } = null!;
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = null!;
         public virtual ICollection<EmailAuthenticator> EmailAuthenticators { get; set; } = null!;
@@ -26,6 +28,7 @@ namespace Core.Domain.Entities
         }
 
         public User(
+            Guid storeId,
             string firstName,
             string lastName,
             string email,
@@ -35,6 +38,7 @@ namespace Core.Domain.Entities
             AuthenticatorType authenticatorType
         )
         {
+            StoreId = storeId;
             FirstName = firstName;
             LastName = lastName;
             Email = email;
@@ -46,6 +50,7 @@ namespace Core.Domain.Entities
 
         public User(
             int id,
+            Guid storeId,
             string firstName,
             string lastName,
             string email,
@@ -57,6 +62,7 @@ namespace Core.Domain.Entities
             : base()
         {
             Id = Guid.Empty;
+            StoreId = storeId;
             FirstName = firstName;
             LastName = lastName;
             Email = email;
