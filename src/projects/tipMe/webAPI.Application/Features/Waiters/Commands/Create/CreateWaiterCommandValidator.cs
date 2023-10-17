@@ -8,6 +8,5 @@ public class CreateWaiterCommandValidator : AbstractValidator<CreateWaiterComman
     {
         RuleFor(c => c.StoreId).NotEmpty();
         RuleFor(c => c.Name).NotEmpty();
-        RuleFor(c => c.Photo).NotEmpty();
     }
 }

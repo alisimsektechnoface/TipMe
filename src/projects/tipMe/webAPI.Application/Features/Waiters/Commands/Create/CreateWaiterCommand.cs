@@ -14,7 +14,7 @@ public class CreateWaiterCommand : IRequest<CustomResponseDto<CreatedWaiterRespo
 {
     public Guid StoreId { get; set; }
     public string Name { get; set; }
-    public string Photo { get; set; }
+    public string? Photo { get; set; }
 
     public string[] Roles => new[] { Admin, Write, WaitersOperationClaims.Create };
 

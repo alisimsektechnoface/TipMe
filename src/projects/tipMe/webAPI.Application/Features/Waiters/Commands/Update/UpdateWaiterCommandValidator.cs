@@ -9,6 +9,5 @@ public class UpdateWaiterCommandValidator : AbstractValidator<UpdateWaiterComman
         RuleFor(c => c.Id).NotEmpty();
         RuleFor(c => c.StoreId).NotEmpty();
         RuleFor(c => c.Name).NotEmpty();
-        RuleFor(c => c.Photo).NotEmpty();
     }
 }

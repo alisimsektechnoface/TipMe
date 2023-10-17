@@ -15,7 +15,7 @@ public class UpdateWaiterCommand : IRequest<CustomResponseDto<UpdatedWaiterRespo
     public Guid Id { get; set; }
     public Guid StoreId { get; set; }
     public string Name { get; set; }
-    public string Photo { get; set; }
+    public string? Photo { get; set; }
 
     public string[] Roles => new[] { Admin, Write, WaitersOperationClaims.Update };
 
