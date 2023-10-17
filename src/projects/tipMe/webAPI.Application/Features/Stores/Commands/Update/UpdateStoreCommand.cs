@@ -14,6 +14,7 @@ public class UpdateStoreCommand : IRequest<CustomResponseDto<UpdatedStoreRespons
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public string Photo { get; set; }
 
     public string[] Roles => new[] { Admin, Write, StoresOperationClaims.Update };
 

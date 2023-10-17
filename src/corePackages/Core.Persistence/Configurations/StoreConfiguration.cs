@@ -13,5 +13,6 @@ public class StoreConfiguration : BaseConfiguration<Store, Guid>
         base.Configure(builder);
         builder.ToTable(TableNameConstants.STORE);
         builder.Property(s => s.Name).HasColumnName("Name").HasMaxLength(100);
+        builder.Property(w => w.Photo).HasColumnName("Photo").IsRequired(false);
     }
 }

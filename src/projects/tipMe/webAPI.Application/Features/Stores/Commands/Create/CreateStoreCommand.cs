@@ -13,6 +13,7 @@ namespace Application.Features.Stores.Commands.Create;
 public class CreateStoreCommand : IRequest<CustomResponseDto<CreatedStoreResponse>>
 {
     public string Name { get; set; }
+    public string Photo { get; set; }
 
     public string[] Roles => new[] { Admin, Write, StoresOperationClaims.Create };
 
