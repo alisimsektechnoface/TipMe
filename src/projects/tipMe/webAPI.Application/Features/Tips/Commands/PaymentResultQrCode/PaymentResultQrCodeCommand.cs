@@ -1,10 +1,8 @@
-using Application.Features.Tips.Constants;
 using Application.Features.Tips.Rules;
 using Application.Services.Repositories;
 using Application.Services.Tips;
 using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
-using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.Domain.Entities;
 using Iyzipay.Model;
 using MediatR;
@@ -51,8 +49,8 @@ public class PaymentResultQrCodeCommand : IRequest<CustomResponseDto<CheckoutFor
                 tip.PaymentDate = DateTime.Now;
                 await _tipRepository.UpdateAsync(tip);
             }
-            else
-                throw new BusinessException(TipsBusinessMessages.TipNotExists);
+            //else
+            // throw new BusinessException(TipsBusinessMessages.TipNotExists);
 
             return CustomResponseDto<CheckoutForm>.Success((int)HttpStatusCode.OK, checkoutForm, checkoutForm?.PaymentStatus?.ToLower() == Status.SUCCESS.ToString());
         }
