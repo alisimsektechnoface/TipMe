@@ -6,6 +6,7 @@ using Core.Application.ResponseTypes.Concrete;
 using Core.Domain.Entities;
 using Core.Persistence.Paging;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using static Application.Features.Waiters.Constants.WaitersOperationClaims;
 
@@ -33,6 +34,7 @@ public class GetListWaiterQuery : IRequest<CustomResponseDto<GetListResponse<Get
             IPaginate<Waiter> waiters = await _waiterRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
+                include: i => i.Include(x => x.Store),
                 cancellationToken: cancellationToken
             );
 

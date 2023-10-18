@@ -4,6 +4,7 @@ using AutoMapper;
 using Core.Application.ResponseTypes.Concrete;
 using Core.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using static Application.Features.Waiters.Constants.WaitersOperationClaims;
 
@@ -30,7 +31,7 @@ public class GetByIdWaiterQuery : IRequest<CustomResponseDto<GetByIdWaiterRespon
 
         public async Task<CustomResponseDto<GetByIdWaiterResponse>> Handle(GetByIdWaiterQuery request, CancellationToken cancellationToken)
         {
-            Waiter? waiter = await _waiterRepository.GetAsync(predicate: w => w.Id == request.Id, cancellationToken: cancellationToken);
+            Waiter? waiter = await _waiterRepository.GetAsync(predicate: w => w.Id == request.Id, include: i => i.Include(x => x.Store), cancellationToken: cancellationToken);
             await _waiterBusinessRules.WaiterShouldExistWhenSelected(waiter);
 
             GetByIdWaiterResponse response = _mapper.Map<GetByIdWaiterResponse>(waiter);
