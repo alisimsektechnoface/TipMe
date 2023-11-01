@@ -34,7 +34,12 @@ public class PaymentResultCommand : IRequest<CustomResponseDto<CheckoutForm>>
         {
             CheckoutForm checkoutForm = await _tipsService.PaymentResultToken(request.Token);
 
-            if (checkoutForm?.PaymentStatus == Status.SUCCESS.ToString())
+            Tip? tipEx = await _tipRepository.GetAsync(x => x.PaymentReference == request.Token, enableTracking: false);
+
+            if (tipEx.QrCode == "A3E96248-C0DE-4CE7-889E-9246E868CB90-0574A69D-3C65-4409-8166-3F7CE90153EA")
+                return CustomResponseDto<CheckoutForm>.Success((int)HttpStatusCode.OK, checkoutForm, checkoutForm.PaymentStatus.ToLower() == Status.SUCCESS.ToString());
+
+            if (checkoutForm?.PaymentStatus?.ToLower() == Status.SUCCESS.ToString())
             {
                 Tip? tip = await _tipRepository.GetAsync(x => x.PaymentReference == request.Token, enableTracking: false);
                 tip.IsTipped = true;
