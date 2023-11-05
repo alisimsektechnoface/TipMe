@@ -1,4 +1,5 @@
 using Application.Features.Tips.Commands.PaymentRequest;
+using Application.Features.Tips.Commands.PaymentRequestWithCard;
 using Application.Features.Tips.Commands.PaymentResult;
 using Application.Features.Tips.Commands.PaymentResultQrCode;
 using Application.Features.Tips.Commands.SavePayment;
@@ -55,6 +56,14 @@ public class TipsController : BaseController
     {
         GetListTipQuery getListTipQuery = new() { PageRequest = pageRequest };
         CustomResponseDto<GetListResponse<GetListTipListItemDto>> response = await Mediator.Send(getListTipQuery);
+        return Ok(response);
+    }
+
+    [HttpPost("PaymentRequestWithCart")]
+    public async Task<IActionResult> PaymentRequestWithCart([FromBody] PaymentRequestWithCardRequest paymentRequest)
+    {
+        PaymentRequestWithCardCommand paymentRequestCommand = new() { Request = paymentRequest };
+        var response = await Mediator.Send(paymentRequestCommand);
         return Ok(response);
     }
 

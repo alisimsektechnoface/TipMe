@@ -10,7 +10,6 @@ using Core.Security.Encryption;
 using Core.Security.JWT;
 using Core.Utilities.ApiDoc;
 using Core.Utilities.Messages;
-using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
@@ -42,8 +41,8 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepositoryModule()));
 
 
-builder.Services.AddHangfire(config =>
-    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection")));
+//builder.Services.AddHangfire(config =>
+//    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection")));
 
 builder.Services.AddCors(options =>
 {
@@ -141,13 +140,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.ConfigureCustomExceptionMiddleware();
 
-app.UseHangfireServer();
-app.UseHangfireDashboard("/job", new DashboardOptions
-{
-    DashboardTitle = "Project Hangfire DashBoard",
-    AppPath = "/Home/HangfireAbout",
+//app.UseHangfireServer();
+//app.UseHangfireDashboard("/job", new DashboardOptions
+//{
+//    DashboardTitle = "Project Hangfire DashBoard",
+//    AppPath = "/Home/HangfireAbout",
 
-});
+//});
 
 app.MapControllers();
 

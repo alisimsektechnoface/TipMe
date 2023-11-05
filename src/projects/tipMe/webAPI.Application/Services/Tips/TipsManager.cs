@@ -1,3 +1,4 @@
+using Application.Features.Tips.Commands.PaymentRequestWithCard;
 using Application.Features.Tips.Rules;
 using Application.Services.Repositories;
 using Core.Domain.Entities;
@@ -78,6 +79,132 @@ public class TipsManager : ITipsService
         Tip deletedTip = await _tipRepository.DeleteAsync(tip);
 
         return deletedTip;
+    }
+
+    public async Task<ThreedsInitialize> PaymentRequestWithCart3D(PaymentRequestWithCardRequest request, Invoice invoice)
+    {
+        string price = (request.TaxAmount + request.TipAmount).ToString().Replace(",", ".");
+
+        CreatePaymentRequest paymentRequest = new CreatePaymentRequest();
+        paymentRequest.Locale = Locale.TR.ToString();
+        paymentRequest.ConversationId = invoice.Id.ToString();
+        paymentRequest.Price = price;
+        paymentRequest.PaidPrice = price;
+        paymentRequest.Currency = Currency.TRY.ToString();
+        paymentRequest.BasketId = invoice.Id.ToString();
+        paymentRequest.PaymentChannel = PaymentChannel.WEB.ToString();
+        paymentRequest.PaymentGroup = PaymentGroup.PRODUCT.ToString();
+        paymentRequest.Installment = 1;
+        paymentRequest.CallbackUrl = "http://tipmeui.nayacreative.com/callback.aspx";
+
+        PaymentCard paymentCard = new PaymentCard();
+        paymentCard.CardHolderName = request.CardHolderName;
+        paymentCard.CardNumber = request.CardNumber;
+        paymentCard.ExpireMonth = request.ExpireMonth;
+        paymentCard.ExpireYear = request.ExpireYear;
+        paymentCard.Cvc = request.Cvc;
+        paymentCard.RegisterCard = 1;
+        paymentRequest.PaymentCard = paymentCard;
+
+        Buyer buyer = new Buyer();
+        buyer.Id = "BY789";
+        buyer.Name = "John";
+        buyer.Surname = "Doe";
+        buyer.GsmNumber = "+905350000000";
+        buyer.Email = "email@email.com";
+        buyer.IdentityNumber = "74300864791";
+        buyer.LastLoginDate = "2015-10-05 12:43:35";
+        buyer.RegistrationDate = "2013-04-21 15:12:09";
+        buyer.RegistrationAddress = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
+        buyer.Ip = "85.34.78.112";
+        buyer.City = "Istanbul";
+        buyer.Country = "Turkey";
+        buyer.ZipCode = "34732";
+        paymentRequest.Buyer = buyer;
+
+        Address billingAddress = new Address();
+        billingAddress.ContactName = "Jane Doe";
+        billingAddress.City = "Istanbul";
+        billingAddress.Country = "Turkey";
+        billingAddress.Description = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
+        billingAddress.ZipCode = "34742";
+        paymentRequest.BillingAddress = billingAddress;
+
+        List<BasketItem> basketItems = new List<BasketItem>();
+        BasketItem firstBasketItem = new BasketItem();
+        firstBasketItem.Id = "Tip";
+        firstBasketItem.Name = "Tip";
+        firstBasketItem.Category1 = "Tip";
+        firstBasketItem.ItemType = BasketItemType.VIRTUAL.ToString();
+        firstBasketItem.Price = price;
+        basketItems.Add(firstBasketItem);
+
+        paymentRequest.BasketItems = basketItems;
+        var checkoutFormInitialize = ThreedsInitialize.Create(paymentRequest, GetIyzipayOptions());
+
+        return checkoutFormInitialize;
+    }
+    public async Task<Payment> PaymentRequestWithCart(PaymentRequestWithCardRequest request, Invoice invoice)
+    {
+        string price = (request.TaxAmount + request.TipAmount).ToString().Replace(",", ".");
+
+        CreatePaymentRequest paymentRequest = new CreatePaymentRequest();
+        paymentRequest.Locale = Locale.TR.ToString();
+        paymentRequest.ConversationId = invoice.Id.ToString();
+        paymentRequest.Price = price;
+        paymentRequest.PaidPrice = price;
+        paymentRequest.Currency = Currency.TRY.ToString();
+        paymentRequest.BasketId = invoice.Id.ToString();
+        paymentRequest.PaymentChannel = PaymentChannel.WEB.ToString();
+        paymentRequest.PaymentGroup = PaymentGroup.PRODUCT.ToString();
+        paymentRequest.Installment = 1;
+
+        PaymentCard paymentCard = new PaymentCard();
+        paymentCard.CardHolderName = request.CardHolderName;
+        paymentCard.CardNumber = request.CardNumber;
+        paymentCard.ExpireMonth = request.ExpireMonth;
+        paymentCard.ExpireYear = request.ExpireYear;
+        paymentCard.Cvc = request.Cvc;
+        paymentCard.RegisterCard = 1;
+        paymentRequest.PaymentCard = paymentCard;
+
+        Buyer buyer = new Buyer();
+        buyer.Id = "BY789";
+        buyer.Name = "John";
+        buyer.Surname = "Doe";
+        buyer.GsmNumber = "+905350000000";
+        buyer.Email = "email@email.com";
+        buyer.IdentityNumber = "74300864791";
+        buyer.LastLoginDate = "2015-10-05 12:43:35";
+        buyer.RegistrationDate = "2013-04-21 15:12:09";
+        buyer.RegistrationAddress = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
+        buyer.Ip = "85.34.78.112";
+        buyer.City = "Istanbul";
+        buyer.Country = "Turkey";
+        buyer.ZipCode = "34732";
+        paymentRequest.Buyer = buyer;
+
+        Address billingAddress = new Address();
+        billingAddress.ContactName = "Jane Doe";
+        billingAddress.City = "Istanbul";
+        billingAddress.Country = "Turkey";
+        billingAddress.Description = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
+        billingAddress.ZipCode = "34742";
+        paymentRequest.BillingAddress = billingAddress;
+
+        List<BasketItem> basketItems = new List<BasketItem>();
+        BasketItem firstBasketItem = new BasketItem();
+        firstBasketItem.Id = "Tip";
+        firstBasketItem.Name = "Tip";
+        firstBasketItem.Category1 = "Tip";
+        firstBasketItem.ItemType = BasketItemType.VIRTUAL.ToString();
+        firstBasketItem.Price = price;
+        basketItems.Add(firstBasketItem);
+
+        paymentRequest.BasketItems = basketItems;
+        var checkoutFormInitialize = Payment.Create(paymentRequest, GetIyzipayOptions());
+
+        return checkoutFormInitialize;
     }
 
     public async Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, string redirectUrl, Invoice invoice)

@@ -1,3 +1,4 @@
+using Application.Features.Tips.Commands.PaymentRequestWithCard;
 using Core.Domain.Entities;
 using Core.Persistence.Paging;
 using Iyzipay.Model;
@@ -28,6 +29,8 @@ public interface ITipsService
     Task<Tip> AddAsync(Tip tip);
     Task<Tip> UpdateAsync(Tip tip);
     Task<Tip> DeleteAsync(Tip tip, bool permanent = false);
+    Task<ThreedsInitialize> PaymentRequestWithCart3D(PaymentRequestWithCardRequest request, Invoice invoice);
+    Task<Payment> PaymentRequestWithCart(PaymentRequestWithCardRequest request, Invoice invoice);
     Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, string redirectUrl, Invoice invoice);
     Task<CheckoutForm> PaymentResultToken(string token);
     Task<CheckoutForm> PaymentResultQrCode(string qrCode);
