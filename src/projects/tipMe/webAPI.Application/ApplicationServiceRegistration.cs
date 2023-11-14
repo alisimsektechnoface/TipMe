@@ -41,6 +41,7 @@ public static class ApplicationServiceRegistration
             configuration.AddOpenBehavior(typeof(DbLoggingBehavior<,>));
             configuration.AddOpenBehavior(typeof(CheckIdBehavior<,>));
             configuration.AddOpenBehavior(typeof(TransactionScopeBehavior<,>));
+            //configuration.AddOpenBehavior(typeof(DecryptionBehavior<,>));
         });
 
 
@@ -49,6 +50,7 @@ public static class ApplicationServiceRegistration
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         services.AddSingleton<IMailService, MailKitMailService>();
+        //services.AddSingleton<IDecryptService, DecryptService>();
         services.AddSingleton<LoggerServiceBase, FileLogger>();
         services.AddSingleton<IElasticSearch, ElasticSearchManager>();
         services.AddScoped<Logging>();
