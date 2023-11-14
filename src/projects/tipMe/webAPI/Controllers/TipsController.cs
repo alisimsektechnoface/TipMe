@@ -4,6 +4,7 @@ using Application.Features.Tips.Commands.PaymentRequestWithCard;
 using Application.Features.Tips.Commands.PaymentResult;
 using Application.Features.Tips.Commands.PaymentResultQrCode;
 using Application.Features.Tips.Commands.SavePayment;
+using Application.Features.Tips.Commands.SavePaymentTokenMobile;
 using Application.Features.Tips.Commands.Update;
 using Application.Features.Tips.Queries.GetById;
 using Application.Features.Tips.Queries.GetList;
@@ -76,12 +77,6 @@ public class TipsController : BaseController
     }
 
 
-    [HttpPost("PaymentRequestMobile")]
-    public async Task<IActionResult> PaymentRequestMobile([FromBody] PaymentRequestMobileCommand paymentRequestCommand)
-    {
-        CustomResponseDto<PaymentRequestMobileResponse> response = await Mediator.Send(paymentRequestCommand);
-        return Ok(response.Data);
-    }
 
     [HttpPost("PaymentResult")]
     public async Task<IActionResult> PaymentResultToken(PaymentResultCommand paymentResultCommand)
@@ -104,6 +99,22 @@ public class TipsController : BaseController
         CustomResponseDto<SavePaymentResponse> response = await Mediator.Send(savePaymentCommand);
         return Ok(response);
     }
+
+    [HttpPost("PaymentRequestMobile")]
+    public async Task<IActionResult> PaymentRequestMobile([FromBody] PaymentRequestMobileCommand paymentRequestCommand)
+    {
+        CustomResponseDto<PaymentRequestMobileResponse> response = await Mediator.Send(paymentRequestCommand);
+        return Ok(response.Data);
+    }
+
+    [HttpPost("SavePaymentTokenMobile")]
+    public async Task<IActionResult> SavePaymentTokenMobile([FromBody] SavePaymentTokenMobileCommand paymentRequestCommand)
+    {
+        CustomResponseDto<bool> response = await Mediator.Send(paymentRequestCommand);
+        return Ok(response);
+    }
+
+
 
     [HttpPost("TestUrl")]
     [AllowAnonymous]
