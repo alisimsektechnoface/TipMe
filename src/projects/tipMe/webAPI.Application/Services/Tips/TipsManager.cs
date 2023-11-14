@@ -1,3 +1,4 @@
+using Application.Features.Tips.Commands.PaymentRequestMobile;
 using Application.Features.Tips.Commands.PaymentRequestWithCard;
 using Application.Features.Tips.Rules;
 using Application.Services.Repositories;
@@ -272,7 +273,62 @@ public class TipsManager : ITipsService
 
         return checkoutFormInitialize;
     }
+    public async Task<PaymentRequestMobileResponse> PaymentRequestMobile(decimal tipAmount, Invoice invoice)
+    {
+        PaymentRequestMobileResponse response = new PaymentRequestMobileResponse();
 
+        string price = tipAmount.ToString().Replace(",", ".");
+
+        CreateCheckoutFormInitializeRequest paymentRequest = new CreateCheckoutFormInitializeRequest();
+        paymentRequest.Locale = Locale.TR.ToString();
+        paymentRequest.ConversationId = invoice.Id.ToString();
+        paymentRequest.Price = price;
+        paymentRequest.PaidPrice = price;
+        paymentRequest.Currency = Currency.TRY.ToString();
+        paymentRequest.BasketId = invoice.Id.ToString();
+        paymentRequest.PaymentGroup = PaymentGroup.PRODUCT.ToString();
+        paymentRequest.PaymentSource = "MOBILE_SDK";
+        paymentRequest.CallbackUrl = "http://tipmeui.nayacreative.com/callback.aspx" + "?qrCode=" + invoice.QrCode;
+
+        Buyer buyer = new Buyer();
+        buyer.Id = "BY789";
+        buyer.Name = "John";
+        buyer.Surname = "Doe";
+        buyer.GsmNumber = "+905350000000";
+        buyer.Email = "email@email.com";
+        buyer.IdentityNumber = "74300864791";
+        buyer.LastLoginDate = "2015-10-05 12:43:35";
+        buyer.RegistrationDate = "2013-04-21 15:12:09";
+        buyer.RegistrationAddress = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
+        buyer.Ip = "85.34.78.112";
+        buyer.City = "Istanbul";
+        buyer.Country = "Turkey";
+        buyer.ZipCode = "34732";
+        paymentRequest.Buyer = buyer;
+
+        Address billingAddress = new Address();
+        billingAddress.ContactName = "Jane Doe";
+        billingAddress.City = "Istanbul";
+        billingAddress.Country = "Turkey";
+        billingAddress.Description = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
+        billingAddress.ZipCode = "34742";
+        paymentRequest.BillingAddress = billingAddress;
+
+        List<BasketItem> basketItems = new List<BasketItem>();
+        BasketItem firstBasketItem = new BasketItem();
+        firstBasketItem.Id = "Tip";
+        firstBasketItem.Name = "Tip";
+        firstBasketItem.Category1 = "Tip";
+        firstBasketItem.ItemType = BasketItemType.VIRTUAL.ToString();
+        firstBasketItem.Price = price;
+        basketItems.Add(firstBasketItem);
+
+        paymentRequest.BasketItems = basketItems;
+
+        response.PaymentBody = paymentRequest;
+        response.Options = GetIyzipayOptionsMobile();
+        return response;
+    }
     public async Task<CheckoutForm> PaymentResultToken(string token)
     {
         RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
@@ -299,6 +355,21 @@ public class TipsManager : ITipsService
         options.ApiKey = "sandbox-vcSUn51fGnZHb25sb7kNsHZcPQBvSpmq";
         options.SecretKey = "sandbox-voeiJp8AQNr4cTfl2G2RRWUt5vZ8friX";
         options.BaseUrl = "https://sandbox-api.iyzipay.com";
+
+        return options;
+    }
+
+    private PaymentRequestMobileOptions GetIyzipayOptionsMobile()
+    {
+        PaymentRequestMobileOptions options = new PaymentRequestMobileOptions();
+        var iyzipayOpt = GetIyzipayOptions();
+        options.BaseUrl = iyzipayOpt.BaseUrl;
+        options.SecretKey = iyzipayOpt.SecretKey;
+        options.ApiKey = iyzipayOpt.ApiKey;
+        options.BaseUrlMobile = "https://sandbox-mobil-sdk.iyzipay.com";
+        options.ThirdPartyClientId = "3393349_Sandbox Merchant Name - 3393349";
+        options.ThirdPartyClientSecret = "69425211373393349";
+        options.SdkType = "pwi";
 
         return options;
     }

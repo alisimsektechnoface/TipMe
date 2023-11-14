@@ -6,6 +6,7 @@ using Core.Application.Pipelines.CheckId;
 using Core.Application.Pipelines.DbLogging;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Performance;
+using Core.Application.Pipelines.Security;
 using Core.Application.Pipelines.Transaction;
 using Core.Application.Pipelines.Validation;
 using Core.Application.Rules;
@@ -50,7 +51,7 @@ public static class ApplicationServiceRegistration
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         services.AddSingleton<IMailService, MailKitMailService>();
-        //services.AddSingleton<IDecryptService, DecryptService>();
+        services.AddSingleton<IDecryptService, DecryptService>();
         services.AddSingleton<LoggerServiceBase, FileLogger>();
         services.AddSingleton<IElasticSearch, ElasticSearchManager>();
         services.AddScoped<Logging>();

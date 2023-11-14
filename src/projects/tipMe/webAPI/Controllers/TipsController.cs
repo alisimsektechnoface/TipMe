@@ -1,4 +1,5 @@
 using Application.Features.Tips.Commands.PaymentRequest;
+using Application.Features.Tips.Commands.PaymentRequestMobile;
 using Application.Features.Tips.Commands.PaymentRequestWithCard;
 using Application.Features.Tips.Commands.PaymentResult;
 using Application.Features.Tips.Commands.PaymentResultQrCode;
@@ -72,6 +73,14 @@ public class TipsController : BaseController
     {
         CustomResponseDto<CheckoutFormInitialize> response = await Mediator.Send(paymentRequestCommand);
         return Ok(response);
+    }
+
+
+    [HttpPost("PaymentRequestMobile")]
+    public async Task<IActionResult> PaymentRequestMobile([FromBody] PaymentRequestMobileCommand paymentRequestCommand)
+    {
+        CustomResponseDto<PaymentRequestMobileResponse> response = await Mediator.Send(paymentRequestCommand);
+        return Ok(response.Data);
     }
 
     [HttpPost("PaymentResult")]
