@@ -1,9 +1,7 @@
 using Application.Features.Tips.Commands.PaymentRequest;
 using Application.Features.Tips.Commands.PaymentRequestMobile;
-using Application.Features.Tips.Commands.PaymentRequestWithCard;
 using Application.Features.Tips.Commands.PaymentResult;
 using Application.Features.Tips.Commands.PaymentResultQrCode;
-using Application.Features.Tips.Commands.SavePayment;
 using Application.Features.Tips.Commands.SavePaymentTokenMobile;
 using Application.Features.Tips.Commands.Update;
 using Application.Features.Tips.Queries.GetById;
@@ -12,7 +10,6 @@ using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Application.ResponseTypes.Concrete;
 using Iyzipay.Model;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webAPI.Controllers.Base;
 
@@ -61,13 +58,13 @@ public class TipsController : BaseController
         return Ok(response);
     }
 
-    [HttpPost("PaymentRequestWithCart")]
-    public async Task<IActionResult> PaymentRequestWithCart([FromBody] PaymentRequestWithCardRequest paymentRequest)
-    {
-        PaymentRequestWithCardCommand paymentRequestCommand = new() { Request = paymentRequest };
-        var response = await Mediator.Send(paymentRequestCommand);
-        return Ok(response);
-    }
+    //[HttpPost("PaymentRequestWithCart")]
+    //public async Task<IActionResult> PaymentRequestWithCart([FromBody] PaymentRequestWithCardRequest paymentRequest)
+    //{
+    //    PaymentRequestWithCardCommand paymentRequestCommand = new() { Request = paymentRequest };
+    //    var response = await Mediator.Send(paymentRequestCommand);
+    //    return Ok(response);
+    //}
 
     [HttpPost("PaymentRequest")]
     public async Task<IActionResult> PaymentRequest([FromBody] PaymentRequestCommand paymentRequestCommand)
@@ -93,13 +90,6 @@ public class TipsController : BaseController
         return Ok(response);
     }
 
-    [HttpPost("SavePayment")]
-    public async Task<IActionResult> SavePayment([FromBody] SavePaymentCommand savePaymentCommand)
-    {
-        CustomResponseDto<SavePaymentResponse> response = await Mediator.Send(savePaymentCommand);
-        return Ok(response);
-    }
-
     [HttpPost("PaymentRequestMobile")]
     public async Task<IActionResult> PaymentRequestMobile([FromBody] PaymentRequestMobileCommand paymentRequestCommand)
     {
@@ -116,10 +106,10 @@ public class TipsController : BaseController
 
 
 
-    [HttpPost("TestUrl")]
-    [AllowAnonymous]
-    public async Task<IActionResult> TestUrl()
-    {
-        return Redirect("http://localhost:4200/result/8D50C0E1-9C67-40EF-B26D-7564E1675B96-0126B432-CB95-4835-A5FA-5C63321FAA05");
-    }
+    //[HttpPost("TestUrl")]
+    //[AllowAnonymous]
+    //public async Task<IActionResult> TestUrl()
+    //{
+    //    return Redirect("http://localhost:4200/result/8D50C0E1-9C67-40EF-B26D-7564E1675B96-0126B432-CB95-4835-A5FA-5C63321FAA05");
+    //}
 }
