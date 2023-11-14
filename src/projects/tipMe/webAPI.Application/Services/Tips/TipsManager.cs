@@ -376,6 +376,7 @@ public class TipsManager : ITipsService
     public async Task<bool> SavePaymentTokenMobile(string qrCode, string token)
     {
         Tip? tip = await _tipRepository.GetAsync(x => x.QrCode == qrCode, enableTracking: false);
+        await _tipBusinessRules.TipShouldExistWhenSelected(tip);
         tip.PaymentReference = token;
         await _tipRepository.UpdateAsync(tip);
 
