@@ -32,8 +32,10 @@ public interface ITipsService
     Task<Tip> DeleteAsync(Tip tip, bool permanent = false);
     Task<ThreedsInitialize> PaymentRequestWithCart3D(PaymentRequestWithCardRequest request, Invoice invoice);
     Task<Payment> PaymentRequestWithCart(PaymentRequestWithCardRequest request, Invoice invoice);
-    Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, string redirectUrl, Invoice invoice);
-    Task<PaymentRequestMobileResponse> PaymentRequestMobile(decimal tipAmount, Invoice invoice);
+    Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, Invoice invoice);
     Task<CheckoutForm> PaymentResultToken(string token);
     Task<CheckoutForm> PaymentResultQrCode(string qrCode);
+
+    Task<PaymentRequestMobileResponse> PaymentRequestMobile(decimal tipAmount, Invoice invoice);
+    Task<bool> SavePaymentTokenMobile(string qrCode, string token);
 }

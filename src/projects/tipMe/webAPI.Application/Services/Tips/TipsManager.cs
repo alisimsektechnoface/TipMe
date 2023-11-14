@@ -1,7 +1,9 @@
+using Application.Features.SystemParameters.Constants;
 using Application.Features.Tips.Commands.PaymentRequestMobile;
 using Application.Features.Tips.Commands.PaymentRequestWithCard;
 using Application.Features.Tips.Rules;
 using Application.Services.Repositories;
+using Application.Services.SystemParameters;
 using Core.Domain.Entities;
 using Core.Persistence.Paging;
 using Iyzipay.Model;
@@ -16,12 +18,14 @@ public class TipsManager : ITipsService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ITipRepository _tipRepository;
+    private readonly ISystemParametersService _systemParametersService;
     private readonly TipBusinessRules _tipBusinessRules;
 
-    public TipsManager(ITipRepository tipRepository, IHttpContextAccessor httpContextAccessor, TipBusinessRules tipBusinessRules)
+    public TipsManager(ITipRepository tipRepository, IHttpContextAccessor httpContextAccessor, ISystemParametersService systemParametersService, TipBusinessRules tipBusinessRules)
     {
         _tipRepository = tipRepository;
         _tipBusinessRules = tipBusinessRules;
+        _systemParametersService = systemParametersService;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -141,7 +145,7 @@ public class TipsManager : ITipsService
         basketItems.Add(firstBasketItem);
 
         paymentRequest.BasketItems = basketItems;
-        var checkoutFormInitialize = ThreedsInitialize.Create(paymentRequest, GetIyzipayOptions());
+        var checkoutFormInitialize = ThreedsInitialize.Create(paymentRequest, await GetIyzipayOptionsAsync());
 
         return checkoutFormInitialize;
     }
@@ -203,17 +207,18 @@ public class TipsManager : ITipsService
         basketItems.Add(firstBasketItem);
 
         paymentRequest.BasketItems = basketItems;
-        var checkoutFormInitialize = Payment.Create(paymentRequest, GetIyzipayOptions());
+        var checkoutFormInitialize = Payment.Create(paymentRequest, await GetIyzipayOptionsAsync());
 
         return checkoutFormInitialize;
     }
 
-    public async Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, string redirectUrl, Invoice invoice)
+    public async Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, Invoice invoice)
     {
         string price = tipAmount.ToString().Replace(",", ".");
         //string myHostUrl = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
         //string myHostUrl1 = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}";
 
+        string iyzicoCallbackUrl = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoCallbackUrl);
 
         CreateCheckoutFormInitializeRequest paymentRequest = new CreateCheckoutFormInitializeRequest();
         //CreatePaymentRequest paymentRequest = new CreatePaymentRequest();
@@ -225,7 +230,7 @@ public class TipsManager : ITipsService
         paymentRequest.BasketId = invoice.Id.ToString();
         paymentRequest.PaymentGroup = PaymentGroup.PRODUCT.ToString();
         //paymentRequest.CallbackUrl = myHostUrl + "/api/Tips/PaymentResult/" + invoice.QrCode;
-        paymentRequest.CallbackUrl = redirectUrl + "?qrCode=" + invoice.QrCode;
+        paymentRequest.CallbackUrl = iyzicoCallbackUrl + "?qrCode=" + invoice.QrCode;
 
         Buyer buyer = new Buyer();
         buyer.Id = "BY789";
@@ -269,15 +274,54 @@ public class TipsManager : ITipsService
         basketItems.Add(firstBasketItem);
 
         paymentRequest.BasketItems = basketItems;
-        CheckoutFormInitialize checkoutFormInitialize = CheckoutFormInitialize.Create(paymentRequest, GetIyzipayOptions());
+        CheckoutFormInitialize checkoutFormInitialize = CheckoutFormInitialize.Create(paymentRequest, await GetIyzipayOptionsAsync());
 
         return checkoutFormInitialize;
     }
+
+    public async Task<CheckoutForm> PaymentResultToken(string token)
+    {
+        RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
+        request.Token = token;
+        CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, await GetIyzipayOptionsAsync());
+
+        return checkoutForm;
+    }
+
+    public async Task<CheckoutForm> PaymentResultQrCode(string qrCode)
+    {
+        Tip? tip = await _tipRepository.GetAsync(x => x.QrCode == qrCode, enableTracking: false);
+        await _tipBusinessRules.TipShouldExistWhenSelected(tip);
+        RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
+        request.Token = tip.PaymentReference;
+        CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, await GetIyzipayOptionsAsync());
+        return checkoutForm;
+    }
+
+    private async Task<Iyzipay.Options> GetIyzipayOptionsAsync()
+    {
+        string iyzicoApiKey = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoApiKey);
+        string iyzicoSecretKey = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoSecretKey);
+        string iyzicoBaseUrl = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoBaseUrl);
+
+        Iyzipay.Options options = new Iyzipay.Options();
+        options.ApiKey = iyzicoApiKey;
+        options.SecretKey = iyzicoSecretKey;
+        options.BaseUrl = iyzicoBaseUrl;
+
+        return options;
+    }
+
+
+    #region Mobile
+
+
     public async Task<PaymentRequestMobileResponse> PaymentRequestMobile(decimal tipAmount, Invoice invoice)
     {
         PaymentRequestMobileResponse response = new PaymentRequestMobileResponse();
 
         string price = tipAmount.ToString().Replace(",", ".");
+        string iyzicoCallbackUrl = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoCallbackUrl);
 
         CreateCheckoutFormInitializeRequest paymentRequest = new CreateCheckoutFormInitializeRequest();
         paymentRequest.Locale = Locale.TR.ToString();
@@ -288,7 +332,7 @@ public class TipsManager : ITipsService
         paymentRequest.BasketId = invoice.Id.ToString();
         paymentRequest.PaymentGroup = PaymentGroup.PRODUCT.ToString();
         paymentRequest.PaymentSource = "MOBILE_SDK";
-        paymentRequest.CallbackUrl = "http://tipmeui.nayacreative.com/callback.aspx" + "?qrCode=" + invoice.QrCode;
+        paymentRequest.CallbackUrl = iyzicoCallbackUrl + "?qrCode=" + invoice.QrCode;
 
         Buyer buyer = new Buyer();
         buyer.Id = "BY789";
@@ -326,51 +370,38 @@ public class TipsManager : ITipsService
         paymentRequest.BasketItems = basketItems;
 
         response.PaymentBody = paymentRequest;
-        response.Options = GetIyzipayOptionsMobile();
+        response.Options = await GetIyzipayOptionsMobile();
         return response;
     }
-    public async Task<CheckoutForm> PaymentResultToken(string token)
-    {
-        RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
-        request.Token = token;
-        CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, GetIyzipayOptions());
-
-        return checkoutForm;
-    }
-
-    public async Task<CheckoutForm> PaymentResultQrCode(string qrCode)
+    public async Task<bool> SavePaymentTokenMobile(string qrCode, string token)
     {
         Tip? tip = await _tipRepository.GetAsync(x => x.QrCode == qrCode, enableTracking: false);
-        await _tipBusinessRules.TipShouldExistWhenSelected(tip);
-        RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
-        request.Token = tip.PaymentReference;
-        CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, GetIyzipayOptions());
+        tip.PaymentReference = token;
+        await _tipRepository.UpdateAsync(tip);
 
-        return checkoutForm;
+        return true;
     }
-
-    private Iyzipay.Options GetIyzipayOptions()
+    private async Task<PaymentRequestMobileOptions> GetIyzipayOptionsMobile()
     {
-        Iyzipay.Options options = new Iyzipay.Options();
-        options.ApiKey = "sandbox-vcSUn51fGnZHb25sb7kNsHZcPQBvSpmq";
-        options.SecretKey = "sandbox-voeiJp8AQNr4cTfl2G2RRWUt5vZ8friX";
-        options.BaseUrl = "https://sandbox-api.iyzipay.com";
+        string iyzicoApiKey = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoApiKey);
+        string iyzicoSecretKey = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoSecretKey);
+        string iyzicoBaseUrl = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoBaseUrl);
+        string iyzicoBaseUrlMobile = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoBaseUrlMobile);
+        string iyzicoThirdPartyClientId = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoThirdPartyClientId);
+        string iyzicoThirdPartyClientSecret = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoThirdPartyClientSecret);
+        string iyzicoSdkType = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoSdkType);
 
-        return options;
-    }
-
-    private PaymentRequestMobileOptions GetIyzipayOptionsMobile()
-    {
         PaymentRequestMobileOptions options = new PaymentRequestMobileOptions();
-        var iyzipayOpt = GetIyzipayOptions();
-        options.BaseUrl = iyzipayOpt.BaseUrl;
-        options.SecretKey = iyzipayOpt.SecretKey;
-        options.ApiKey = iyzipayOpt.ApiKey;
-        options.BaseUrlMobile = "https://sandbox-mobil-sdk.iyzipay.com";
-        options.ThirdPartyClientId = "3393349_Sandbox Merchant Name - 3393349";
-        options.ThirdPartyClientSecret = "69425211373393349";
-        options.SdkType = "pwi";
+
+        options.ApiKey = iyzicoApiKey;
+        options.SecretKey = iyzicoSecretKey;
+        options.BaseUrl = iyzicoBaseUrl;
+        options.BaseUrlMobile = iyzicoBaseUrlMobile;
+        options.ThirdPartyClientId = iyzicoThirdPartyClientId;
+        options.ThirdPartyClientSecret = iyzicoThirdPartyClientSecret;
+        options.SdkType = iyzicoSdkType;
 
         return options;
     }
+    #endregion
 }
