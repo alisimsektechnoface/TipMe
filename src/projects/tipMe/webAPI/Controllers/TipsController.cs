@@ -94,7 +94,7 @@ public class TipsController : BaseController
     public async Task<IActionResult> PaymentRequestMobile([FromBody] PaymentRequestMobileCommand paymentRequestCommand)
     {
         CustomResponseDto<PaymentRequestMobileResponse> response = await Mediator.Send(paymentRequestCommand);
-        return Ok(response.Data);
+        return Ok(response);
     }
 
     [HttpPost("SavePaymentTokenMobile")]
