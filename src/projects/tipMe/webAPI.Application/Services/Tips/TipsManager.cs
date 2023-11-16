@@ -211,7 +211,6 @@ public class TipsManager : ITipsService
 
         return checkoutFormInitialize;
     }
-
     public async Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, Invoice invoice)
     {
         string price = tipAmount.ToString().Replace(",", ".");
@@ -278,7 +277,6 @@ public class TipsManager : ITipsService
 
         return checkoutFormInitialize;
     }
-
     public async Task<CheckoutForm> PaymentResultToken(string token)
     {
         RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
@@ -287,7 +285,6 @@ public class TipsManager : ITipsService
 
         return checkoutForm;
     }
-
     public async Task<CheckoutForm> PaymentResultQrCode(string qrCode)
     {
         Tip? tip = await _tipRepository.GetAsync(x => x.QrCode == qrCode, enableTracking: false);
@@ -297,7 +294,6 @@ public class TipsManager : ITipsService
         CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, await GetIyzipayOptionsAsync());
         return checkoutForm;
     }
-
     private async Task<Iyzipay.Options> GetIyzipayOptionsAsync()
     {
         string iyzicoApiKey = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoApiKey);
