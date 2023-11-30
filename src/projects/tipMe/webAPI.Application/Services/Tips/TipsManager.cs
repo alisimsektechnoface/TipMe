@@ -213,6 +213,8 @@ public class TipsManager : ITipsService
     }
     public async Task<CheckoutFormInitialize> PaymentRequest(decimal tipAmount, Invoice invoice)
     {
+        if (tipAmount <= 0)
+            return default;
         string price = tipAmount.ToString().Replace(",", ".");
         //string myHostUrl = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
         //string myHostUrl1 = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}";
@@ -316,6 +318,8 @@ public class TipsManager : ITipsService
     {
         PaymentRequestMobileResponse response = new PaymentRequestMobileResponse();
 
+        if (tipAmount <= 0)
+            return response;
         string price = tipAmount.ToString().Replace(",", ".");
         string iyzicoCallbackUrl = await _systemParametersService.GetValueByKey(SystemParametersConstants.str_IyzicoCallbackUrl);
 
